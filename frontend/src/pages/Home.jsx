@@ -4,6 +4,7 @@ import { useCartStore } from "../store/cartStore";
 import CropFilters from "../components/CropFilters";
 import appleImg from "../assets/apple.jpg";
 
+
 const Home = () => {
 
   const {
@@ -138,6 +139,8 @@ useEffect(() => {
                   >
                     Add to Cart 🛒
                   </button>
+
+
 
                 </div>
               ))}

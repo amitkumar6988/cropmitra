@@ -1,4 +1,6 @@
 import express from "express"
+import http from "http";
+import { Server } from "socket.io";
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
 import cors from "cors"
@@ -47,8 +49,38 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/address", addressRoutes);
 
+// updated part for live location
 
 connectDB()
-app.listen(port ,()=>{
-    console.log(`server is running on ${port}`)    
-})
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    credentials: true
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  // Buyer joins specific order room
+  socket.on("joinOrderRoom", (orderId) => {
+    socket.join(orderId);
+    console.log("Joined order room:", orderId);
+  });
+
+  // Delivery agent sends location
+  socket.on("updateLocation", ({ orderId, lat, lng }) => {
+    io.to(orderId).emit("locationUpdated", { lat, lng });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
+
+server.listen(port, () => {
+  console.log(`Server running on ${port}`);
+});

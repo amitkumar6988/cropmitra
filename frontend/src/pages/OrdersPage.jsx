@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { useOrderStore } from "../store/orderStore";
+import { useNavigate } from "react-router-dom";
 import appleImg from "../assets/apple.jpg";
 
 const OrdersPage = () => {
   const { orders, fetchMyOrders, loading } = useOrderStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchMyOrders();
@@ -42,7 +44,6 @@ const OrdersPage = () => {
       
       <div className="max-w-7xl mx-auto px-6 py-10">
 
-        {/* SAME heading style as home */}
         <h1 className="text-3xl font-bold mb-2">
           My Orders 📦
         </h1>
@@ -51,7 +52,6 @@ const OrdersPage = () => {
           Quickly review and track your recent purchases.
         </p>
 
-        {/* GRID — same spacing as home */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
           {orders.flatMap((order) =>
             order.items.map((item, index) => (
@@ -74,19 +74,19 @@ const OrdersPage = () => {
                 "
               >
 
-                {/* STATUS BADGE — like Fresh badge */}
+                {/* STATUS BADGE */}
                 <span className={`
                   absolute top-4 left-4 text-xs px-3 py-1 rounded-full shadow font-medium
-                  ${order.status === "delivered"
+                  ${order.status?.toLowerCase() === "delivered"
                     ? "bg-green-600 text-white"
-                    : order.status === "pending"
+                    : order.status?.toLowerCase() === "pending"
                     ? "bg-yellow-500 text-white"
                     : "bg-blue-600 text-white"}
                 `}>
                   {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                 </span>
 
-                {/* Image — SAME STYLE */}
+                {/* Image */}
                 <div className="h-44 flex items-center justify-center bg-gradient-to-br from-green-50 to-white rounded-2xl overflow-hidden">
                   <img
                     src={item.crop?.images?.[0] || appleImg}
@@ -113,7 +113,6 @@ const OrdersPage = () => {
                   Order #{order._id.slice(-6)}
                 </p>
 
-                {/* Price */}
                 <p className="text-2xl font-extrabold text-green-600 mt-2">
                   ₹{item.price * item.quantity}
                 </p>
@@ -121,6 +120,16 @@ const OrdersPage = () => {
                 <p className="text-sm text-gray-500">
                   Qty: {item.quantity}
                 </p>
+
+                {/* ✅ Track Button Only When Shipped */}
+                {order.status?.toLowerCase() === "shipped" && (
+                  <button
+                    onClick={() => navigate(`/track/${order._id}`)}
+                    className="mt-4 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
+                  >
+                    Track Order
+                  </button>
+                )}
 
               </div>
             ))

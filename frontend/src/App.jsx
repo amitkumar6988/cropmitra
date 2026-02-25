@@ -9,6 +9,10 @@ import {
 import DashboardNavbar from "./components/Navbar";
 import CartModal from "./components/CartModal";
 import { Toaster } from "react-hot-toast";
+import TrackOrder from "./pages/TrackOrder";
+
+import DeliveryTest from "./pages/DeliveryTest";
+
 
 // Pages
 import LandingPage from "./pages/LandingPage";
@@ -98,6 +102,8 @@ function AppContent() {
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/addresses" element={<Addresses />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/track/:orderId" element={<TrackOrder />} />
+        <Route path="/delivery" element={<DeliveryTest />} />
 
         {/* FARMER PROTECTED */}
         <Route

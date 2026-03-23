@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import logo from "../assets/logo.png";
 
 const AuthNavbar = () => {
   const [hovered, setHovered] = useState(null);
+  const { t } = useTranslation();
 
   return (
     <header className="w-full bg-white border-b border-gray-200 fixed top-0 z-50">
@@ -22,7 +24,7 @@ const AuthNavbar = () => {
 
           {/* HOME */}
           <Link to="/" className="nav-link">
-            Home
+            {t("authNavbar.home")}
           </Link>
 
           {/* FEATURES */}
@@ -31,13 +33,22 @@ const AuthNavbar = () => {
             onMouseEnter={() => setHovered("features")}
             onMouseLeave={() => setHovered(null)}
           >
-            <span className="nav-link">Features</span>
+            <span className="nav-link">{t("authNavbar.features")}</span>
 
             {hovered === "features" && (
               <DropdownCard>
-                <DropdownItem title="Crop Marketplace" desc="Buy & sell fresh crops" />
-                <DropdownItem title="Farmer Dashboard" desc="Track sales & earnings" />
-                <DropdownItem title="Secure Payments" desc="Fast & safe checkout" />
+                <DropdownItem 
+                  title={t("authNavbar.feature1Title")}
+                  desc={t("authNavbar.feature1Desc")}
+                />
+                <DropdownItem 
+                  title={t("authNavbar.feature2Title")}
+                  desc={t("authNavbar.feature2Desc")}
+                />
+                <DropdownItem 
+                  title={t("authNavbar.feature3Title")}
+                  desc={t("authNavbar.feature3Desc")}
+                />
               </DropdownCard>
             )}
           </div>
@@ -48,13 +59,22 @@ const AuthNavbar = () => {
             onMouseEnter={() => setHovered("how")}
             onMouseLeave={() => setHovered(null)}
           >
-            <span className="nav-link">How it Works</span>
+            <span className="nav-link">{t("authNavbar.howItWorks")}</span>
 
             {hovered === "how" && (
               <DropdownCard>
-                <DropdownItem title="Sign Up" desc="Create your free account" />
-                <DropdownItem title="List or Browse" desc="Farmers list, users buy" />
-                <DropdownItem title="Order & Deliver" desc="Simple checkout flow" />
+                <DropdownItem 
+                  title={t("authNavbar.step1Title")}
+                  desc={t("authNavbar.step1Desc")}
+                />
+                <DropdownItem 
+                  title={t("authNavbar.step2Title")}
+                  desc={t("authNavbar.step2Desc")}
+                />
+                <DropdownItem 
+                  title={t("authNavbar.step3Title")}
+                  desc={t("authNavbar.step3Desc")}
+                />
               </DropdownCard>
             )}
           </div>
@@ -65,13 +85,22 @@ const AuthNavbar = () => {
             onMouseEnter={() => setHovered("pricing")}
             onMouseLeave={() => setHovered(null)}
           >
-            <span className="nav-link">Pricing</span>
+            <span className="nav-link">{t("authNavbar.pricing")}</span>
 
             {hovered === "pricing" && (
               <DropdownCard>
-                <DropdownItem title="Free Buyers" desc="No extra cost" />
-                <DropdownItem title="Low Commission" desc="Farmer-friendly pricing" />
-                <DropdownItem title="Transparent" desc="No hidden charges" />
+                <DropdownItem 
+                  title={t("authNavbar.price1Title")}
+                  desc={t("authNavbar.price1Desc")}
+                />
+                <DropdownItem 
+                  title={t("authNavbar.price2Title")}
+                  desc={t("authNavbar.price2Desc")}
+                />
+                <DropdownItem 
+                  title={t("authNavbar.price3Title")}
+                  desc={t("authNavbar.price3Desc")}
+                />
               </DropdownCard>
             )}
           </div>
@@ -83,7 +112,7 @@ const AuthNavbar = () => {
             to="/login"
             className="text-black hover:text-gray-600 transition"
           >
-            Log In
+            {t("authNavbar.login")}
           </Link>
 
           <Link
@@ -92,9 +121,10 @@ const AuthNavbar = () => {
                        border border-yellow-400 hover:bg-gray-900
                        transition shadow-[0_0_0_0] hover:shadow-[0_0_10px_rgba(234,179,8,0.6)]"
           >
-            Join for Free
+            {t("authNavbar.joinFree")}
           </Link>
         </div>
+
       </div>
     </header>
   );
@@ -102,12 +132,11 @@ const AuthNavbar = () => {
 
 export default AuthNavbar;
 
-/* ---------------- DROPDOWN COMPONENTS ---------------- */
+/* Dropdown components remain the same */
 
 const DropdownCard = ({ children }) => (
   <div className="absolute top-12 left-0 w-64 bg-white border 
-                  border-gray-200 shadow-xl rounded-xl p-4 space-y-3
-                  animate-dropdown">
+                  border-gray-200 shadow-xl rounded-xl p-4 space-y-3">
     {children}
   </div>
 );

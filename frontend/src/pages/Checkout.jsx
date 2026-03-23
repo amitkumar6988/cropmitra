@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { useAddressStore } from "../store/addressStore";
 import { useCartStore } from "../store/cartStore";
 import { useOrderStore } from "../store/orderStore";
+import { usePaymentStore } from "../store/paymentStore";
 import { useNavigate } from "react-router-dom";
+
+
 
 const Checkout = () => {
 
@@ -11,10 +14,10 @@ const Checkout = () => {
   const { addresses, fetchAddresses } = useAddressStore();
   const { cart, clearCart } = useCartStore();
   const { placeOrder, loading } = useOrderStore();
+ const { handleOnlinePayment} = usePaymentStore();  // ⭐ USE STORE
 
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("COD");
-
 
   // Redirect if cart empty
   useEffect(() => {
@@ -23,17 +26,14 @@ const Checkout = () => {
     }
   }, [cart, navigate]);
 
-
   // Fetch addresses
   useEffect(() => {
     fetchAddresses();
   }, []);
 
-
   // Auto select default address
   useEffect(() => {
-
-    if(addresses.length === 0) return;
+    if (addresses.length === 0) return;
 
     const defaultAddr =
       addresses.find(a => a.isDefault) || addresses[0];
@@ -41,44 +41,31 @@ const Checkout = () => {
     if (!selectedAddress && defaultAddr) {
       setSelectedAddress(defaultAddr._id);
     }
-
   }, [addresses, selectedAddress]);
-
 
   const totalAmount = cart.reduce(
     (sum, item) => sum + item.crop.price * item.quantity,
     0
   );
 
+  // ⭐ BUTTON CLICK HANDLER (CALL STORE)
+  const handlePlaceOrderClick = () => {
 
-  const handlePlaceOrder = async () => {
+  if (!selectedAddress) {
+    alert("Please select delivery address");
+    return;
+  }
 
-    if (!selectedAddress) {
-      alert("Please select an address");
-      return;
-    }
-
-    const success = await placeOrder({
-      items: cart.map(item => ({
-        crop: item.crop._id,
-        quantity: item.quantity,
-        farmer: item.crop.farmer,
-        price: item.crop.price
-      })),
-      address: selectedAddress,
-      totalAmount,
-      paymentMethod
-    });
-
-    if(success){
-      clearCart();
-      navigate("/orders");
-    }
-
-  }; // ⭐ FUNCTION CLOSED HERE
-
-
-
+  handleOnlinePayment({
+    cart,
+    selectedAddress,
+    totalAmount,
+    paymentMethod,
+    placeOrder,
+    clearCart,
+    navigate
+  });
+};
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-green-100">
 
@@ -92,24 +79,17 @@ const Checkout = () => {
 
           {/* ADDRESS */}
           <div>
-
             <h2 className="text-2xl font-bold mb-5">
               Select Delivery Address
             </h2>
 
             <div className="space-y-4">
-
               {addresses.map(addr => (
-
                 <div
                   key={addr._id}
                   onClick={() => setSelectedAddress(addr._id)}
                   className={`
-                    cursor-pointer
-                    border-2
-                    rounded-2xl
-                    p-5
-                    transition
+                    cursor-pointer border-2 rounded-2xl p-5 transition
                     ${
                       selectedAddress === addr._id
                         ? "border-green-600 bg-green-50"
@@ -117,31 +97,14 @@ const Checkout = () => {
                     }
                   `}
                 >
-
-                  <p className="font-bold">
-                    {addr.fullName}
-                  </p>
-
-                  <p className="text-gray-600">
-                    {addr.addressLine}
-                  </p>
-
-                  <p className="text-gray-500">
-                    {addr.city}, {addr.state}
-                  </p>
-
-                  <p className="text-sm mt-1">
-                    📞 {addr.phone}
-                  </p>
-
+                  <p className="font-bold">{addr.fullName}</p>
+                  <p className="text-gray-600">{addr.addressLine}</p>
+                  <p className="text-gray-500">{addr.city}, {addr.state}</p>
+                  <p className="text-sm mt-1">📞 {addr.phone}</p>
                 </div>
-
               ))}
-
             </div>
           </div>
-
-
 
           {/* ORDER SUMMARY */}
           <div className="bg-white rounded-3xl p-7 shadow-lg h-fit">
@@ -151,7 +114,6 @@ const Checkout = () => {
             </h2>
 
             {cart.map(item => (
-
               <div
                 key={item.crop._id}
                 className="flex justify-between mb-2"
@@ -164,20 +126,16 @@ const Checkout = () => {
                   ₹{item.crop.price * item.quantity}
                 </span>
               </div>
-
             ))}
 
             <hr className="my-6" />
 
             <div className="flex justify-between text-2xl font-bold mb-6">
               <span>Total</span>
-              <span className="text-green-600">
-                ₹{totalAmount}
-              </span>
+              <span className="text-green-600">₹{totalAmount}</span>
             </div>
 
-
-            {/* PAYMENT */}
+            {/* PAYMENT OPTIONS */}
             <div className="mb-6">
 
               <p className="font-semibold mb-2">
@@ -186,45 +144,39 @@ const Checkout = () => {
 
               <div
                 onClick={() => setPaymentMethod("COD")}
-                className={`
-                  border
-                  rounded-xl
-                  p-3
-                  cursor-pointer
-                  ${
-                    paymentMethod === "COD"
-                      ? "bg-green-50 border-green-500"
-                      : ""
-                  }
-                `}
+                className={`border rounded-xl p-3 cursor-pointer ${
+                  paymentMethod === "COD"
+                    ? "bg-green-50 border-green-500"
+                    : ""
+                }`}
               >
                 Cash on Delivery
               </div>
 
+              <div
+                onClick={() => setPaymentMethod("ONLINE")}
+                className={`border rounded-xl p-3 cursor-pointer mt-3 ${
+                  paymentMethod === "ONLINE"
+                    ? "bg-green-50 border-green-500"
+                    : ""
+                }`}
+              >
+                Pay Online (UPI / Card / Net Banking)
+              </div>
+
             </div>
 
-
             <button
-              onClick={handlePlaceOrder}
+              onClick={handlePlaceOrderClick}   // ⭐ FIXED
               disabled={loading}
               className="
-                w-full
-                bg-gradient-to-r
-                from-green-600
-                to-emerald-500
-                text-white
-                py-3
-                rounded-2xl
-                font-semibold
-                hover:scale-[1.02]
-                active:scale-95
-                transition
+                w-full bg-gradient-to-r from-green-600 to-emerald-500
+                text-white py-3 rounded-2xl font-semibold
+                hover:scale-[1.02] active:scale-95 transition
                 disabled:opacity-50
               "
             >
-              {loading
-                ? "Placing Order..."
-                : "Place Order"}
+              {loading ? "Processing..." : "Place Order"}
             </button>
 
           </div>

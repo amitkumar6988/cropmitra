@@ -1,24 +1,28 @@
 import React from "react";
 import { Star, CheckCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const Reviews = () => {
+
+  const { t } = useTranslation();
+
   const reviews = [
     {
       name: "Rahul Sharma",
       rating: 5,
-      comment: "Excellent quality crops! Fresh and timely delivery.",
+      comment: t("reviews.r1"),
       verified: true,
     },
     {
       name: "Anita Verma",
       rating: 4,
-      comment: "Good pricing and organic produce.",
+      comment: t("reviews.r2"),
       verified: true,
     },
     {
       name: "Local Vendor",
       rating: 3,
-      comment: "Quality was good but delivery was slightly delayed.",
+      comment: t("reviews.r3"),
       verified: false,
     },
   ];
@@ -28,11 +32,15 @@ const Reviews = () => {
 
   return (
     <div className="bg-white rounded-2xl shadow p-4">
-      <h2 className="font-bold text-lg mb-2">Reviews</h2>
+
+      <h2 className="font-bold text-lg mb-2">
+        {t("reviews.title")}
+      </h2>
 
       {/* Average Rating */}
       <div className="flex items-center gap-2 mb-4">
         <span className="text-3xl font-bold">{avgRating.toFixed(1)}</span>
+
         <div className="flex text-yellow-400">
           {[...Array(5)].map((_, i) => (
             <Star
@@ -42,8 +50,9 @@ const Reviews = () => {
             />
           ))}
         </div>
+
         <span className="text-sm text-gray-500">
-          ({reviews.length} reviews)
+          ({reviews.length} {t("reviews.count")})
         </span>
       </div>
 
@@ -51,8 +60,10 @@ const Reviews = () => {
       <div className="space-y-4">
         {reviews.map((review, idx) => (
           <div key={idx} className="border-b pb-3">
+
             <div className="flex items-center gap-2">
               <span className="font-semibold">{review.name}</span>
+
               {review.verified && (
                 <CheckCircle size={14} className="text-green-600" />
               )}
@@ -69,9 +80,11 @@ const Reviews = () => {
             </div>
 
             <p className="text-sm text-gray-600">{review.comment}</p>
+
           </div>
         ))}
       </div>
+
     </div>
   );
 };

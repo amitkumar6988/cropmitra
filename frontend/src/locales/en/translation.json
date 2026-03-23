@@ -1,0 +1,299 @@
+{
+  "navbar": {
+    "features": "Features",
+    "howItWorks": "How It Works",
+    "login": "Login",
+    "getStarted": "Get Started"
+  },
+
+  "hero": {
+    "title": "CONNECT YOUR CROPS TO NEW MARKETS",
+    "subtitle": "Sell crops efficiently, streamline logistics, and secure better pricing from verified distributors nationwide.",
+    "button": "Start Selling Today"
+  },
+
+  "reviews": {
+  "title": "समीक्षाएँ",
+  "count": "समीक्षाएँ",
+  "r1": "बेहतरीन गुणवत्ता की फसलें! ताज़ा और समय पर डिलीवरी।",
+  "r2": "अच्छी कीमत और जैविक उत्पाद।",
+  "r3": "गुणवत्ता अच्छी थी लेकिन डिलीवरी थोड़ी देर से हुई।"
+},
+
+  "features": {
+    "sectionTitle": "The Cropmitra Marketplace Pipeline",
+
+    "item1": {
+      "title": "Optimized Crop Listings",
+      "description": "Farmers list crops with verified quality and quantity, getting matched instantly with qualified distributors."
+    },
+
+    "item2": {
+      "title": "Secure Buyer Transactions",
+      "description": "Retailers and distributors submit purchase requests, locking in prices through our secure smart contract system."
+    },
+
+    "item3": {
+      "title": "Smart Logistics & Tracking",
+      "description": "Automated scheduling and tracking ensure crops are picked up efficiently and delivered to the buyer on time."
+    },
+
+    "item4": {
+      "title": "Real-time Payment Assurance",
+      "description": "Farmers receive verified, rapid payment upon confirmed delivery, ensuring financial stability and trust."
+    }
+  },
+  "footer": {
+  "title": "READY TO TRANSFORM YOUR FARM?",
+  "placeholder": "Enter your email address",
+  "signup": "Sign Up Now",
+  "privacy": "Privacy Policy",
+  "terms": "Terms of Service",
+  "rights": "All Rights Reserved.",
+  "enterEmail": "Please enter your email!",
+  "redirecting": "Thanks! Redirecting to signup page..."
+},
+
+"testimonials": {
+  "title": "Trusted Results",
+  "quote": "Cropmitra instantly connected me to five new distributors in different districts, boosting my average price per unit by 15%!",
+  "author": "— Sunita Devi, Farm Owner & Seller",
+  "trust1": "Verified by Farmers 🤝",
+  "trust2": "Logistics Network 🚚"
+},
+"authNavbar": {
+  "home": "Home",
+  "features": "Features",
+  "howItWorks": "How it Works",
+  "pricing": "Pricing",
+
+  "feature1Title": "Crop Marketplace",
+  "feature1Desc": "Buy & sell fresh crops",
+
+  "feature2Title": "Farmer Dashboard",
+  "feature2Desc": "Track sales & earnings",
+
+  "feature3Title": "Secure Payments",
+  "feature3Desc": "Fast & safe checkout",
+
+  "step1Title": "Sign Up",
+  "step1Desc": "Create your free account",
+
+  "step2Title": "List or Browse",
+  "step2Desc": "Farmers list, users buy",
+
+  "step3Title": "Order & Deliver",
+  "step3Desc": "Simple checkout flow",
+
+  "price1Title": "Free Buyers",
+  "price1Desc": "No extra cost",
+
+  "price2Title": "Low Commission",
+  "price2Desc": "Farmer-friendly pricing",
+
+  "price3Title": "Transparent",
+  "price3Desc": "No hidden charges",
+
+  "login": "Log In",
+  "joinFree": "Join for Free"
+},
+
+"signup": {
+  "title": "Create Account 🌱",
+  "subtitle": "Join the agri marketplace",
+  "name": "Full Name",
+  "email": "Email address",
+  "password": "Password",
+  "signupButton": "Sign Up",
+  "haveAccount": "Already have an account?",
+  "login": "Log in",
+  "fillFields": "Please fill all fields!",
+  "creating": "Creating your account..."
+},
+
+"login": {
+  "title": "Welcome Back 🌱",
+  "subtitle": "Login to continue",
+  "email": "Email address",
+  "password": "Password",
+  "loginButton": "Login",
+  "forgot": "Forgot password?",
+  "noAccount": "Don't have an account?",
+  "signup": "Sign up",
+  "fillFields": "Please fill all fields!",
+  "logging": "Logging you in..."
+},
+
+"home": {
+  "heroTitle": "Farm Fresh Crops 🌾",
+  "heroSubtitle": "Buy directly from farmers. Fresher crops, better prices.",
+  "explore": "Explore",
+  "heading": "Fresh Crops",
+  "description": "Hand-picked quality products from verified farmers.",
+  "loading": "Loading fresh crops...",
+  "noCrops": "No crops found",
+  "fresh": "Fresh",
+  "verifiedFarmer": "Verified Farmer",
+  "addToCart": "Add to Cart",
+  "prev": "Prev",
+  "next": "Next",
+  "page": "Page",
+  "of": "of"
+},
+
+"filters": {
+  "search": "Search crops...",
+  "allCategories": "All Categories",
+  "fruits": "Fruits",
+  "vegetables": "Vegetables",
+  "grains": "Grains",
+  "pulse": "Pulse",
+  "other": "Other",
+  "all": "All",
+  "organic": "Organic",
+  "nonOrganic": "Non-Organic",
+  "sortPrice": "Sort by Price",
+  "lowHigh": "Low → High",
+  "highLow": "High → Low"
+},
+
+"userNavbar": {
+  "search": "Search crops...",
+  "orders": "Orders",
+  "profile": "Profile",
+  "logout": "Logout"
+},
+
+"crops": {
+  "loading": "Loading crops...",
+  "fetchError": "Failed to fetch crops!",
+  "farmer": "Farmer",
+  "location": "Location",
+  "price": "Price",
+  "quantity": "Quantity",
+  "buyNow": "Buy Now"
+},
+
+"cart": {
+  "emptyTitle": "Your cart is empty",
+  "emptySubtitle": "Add fresh crops to continue shopping 🌾",
+  "continueShopping": "Continue Shopping",
+  "myCart": "My Cart",
+  "reviewItems": "Review your items before checkout.",
+  "verifiedFarmer": "Verified Farmer",
+  "remove": "Remove",
+  "orderSummary": "Order Summary",
+  "items": "Items",
+  "delivery": "Delivery",
+  "free": "Free",
+  "total": "Total",
+  "checkout": "Proceed to Checkout",
+  "clearCart": "Clear Cart"
+},
+
+"orders": {
+  "loading": "Loading your orders...",
+  "emptyTitle": "No orders yet",
+  "emptySubtitle": "Your placed orders will appear here 🌾",
+  "myOrders": "My Orders",
+  "reviewOrders": "Quickly review and track your recent purchases.",
+  "order": "Order",
+  "qty": "Qty",
+  "track": "Track Order"
+},
+"profile": {
+  "options": "Profile options",
+  "viewImage": "View Image",
+  "changeImage": "Change Image",
+  "addCrop": "Add Crop",
+  "becomeFarmer": "Become a Farmer",
+  "farmer": "Farmer"
+},
+"profile": {
+  "options": "Profile options",
+  "viewImage": "View Image",
+  "changeImage": "Change Image",
+  "addCrop": "Add Crop",
+  "becomeFarmer": "Become a Farmer",
+  "farmer": "Farmer"
+},
+
+"roles": {
+  "farmer": "Farmer",
+  "user": "User",
+  "admin": "Admin"
+},
+
+"profilePage": {
+  "loading": "Loading...",
+  "loginRequired": "Please login",
+
+  "cards": {
+    "orders": {
+      "title": "My Orders",
+      "desc": "Manage your orders"
+    },
+    "addresses": {
+      "title": "Addresses",
+      "desc": "Manage your addresses"
+    },
+    "farmerOrders": {
+      "title": "Farmer Orders",
+      "desc": "Manage orders for your crops"
+    },
+    "addCrop": {
+      "title": "Add Crop",
+      "desc": "Add a new crop to sell"
+    },
+    "myCrops": {
+      "title": "My Crops",
+      "desc": "View and manage your crops"
+    }
+  }
+},
+
+"myCrops": {
+  "loading": "Loading Your Crops 🌾...",
+  "title": "My Crops",
+  "subtitle": "Manage and track your crop listings",
+  "empty": "You haven't added any crops yet.",
+  "addFirst": "Add Your First Crop",
+  "stock": "Stock:",
+  "organic": "Organic",
+  "delete": "Delete Crop",
+  "deleting": "Deleting..."
+},
+
+"farmerApply": {
+  "title": "Apply as Farmer",
+  "farmName": "Farm Name",
+  "location": "Location",
+  "license": "License Number (optional)",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "submitting": "Submitting..."
+},
+
+"addCrop": {
+  "title": "Add New Crop",
+  "cropName": "Crop Name",
+  "selectCategory": "Select Category",
+  "quantity": "Quantity",
+  "price": "Price",
+  "discount": "Discount %",
+  "location": "Location",
+  "description": "Description",
+  "organic": "Organic Crop",
+  "add": "Add Crop 🌱",
+  "adding": "Adding Crop..."
+},
+
+"categories": {
+  "fruit": "Fruit",
+  "vegetable": "Vegetable",
+  "grain": "Grain",
+  "pulse": "Pulse",
+  "other": "Other"
+}
+
+}

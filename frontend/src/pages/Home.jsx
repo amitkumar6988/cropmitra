@@ -3,9 +3,11 @@ import { useCropMarketStore } from "../store/cropMarketStore";
 import { useCartStore } from "../store/cartStore";
 import CropFilters from "../components/CropFilters";
 import appleImg from "../assets/apple.jpg";
-
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
+
+  const { t } = useTranslation();
 
   const {
     crops,
@@ -18,10 +20,9 @@ const Home = () => {
 
   const { addToCart } = useCartStore();
 
-useEffect(() => {
-  setPage(1);
-}, []);
-
+  useEffect(() => {
+    setPage(1);
+  }, []);
 
   return (
     <div className="min-h-screen bg-base-200 text-base-content">
@@ -29,26 +30,24 @@ useEffect(() => {
       <div className="max-w-7xl mx-auto px-6 py-10">
 
         {/* HERO */}
-        <div className="
-          relative mb-10 overflow-hidden rounded-2xl
+        <div className="relative mb-10 overflow-hidden rounded-2xl
           bg-gradient-to-r from-green-600 to-emerald-500
-          px-8 py-8 text-white shadow-xl
-        ">
-          
+          px-8 py-8 text-white shadow-xl">
+
           <div className="flex items-center justify-between gap-6 flex-wrap">
 
             <div className="max-w-xl">
               <h1 className="text-3xl font-bold leading-snug">
-                Farm Fresh Crops 🌾
+                {t("home.heroTitle")}
               </h1>
 
               <p className="mt-2 text-green-100">
-                Buy directly from farmers. Fresher crops, better prices.
+                {t("home.heroSubtitle")}
               </p>
             </div>
 
             <button className="btn bg-white text-green-700 hover:bg-gray-100">
-              Explore →
+              {t("home.explore")} →
             </button>
 
           </div>
@@ -58,11 +57,11 @@ useEffect(() => {
 
         {/* Heading */}
         <h2 className="text-3xl font-bold mb-2">
-          Fresh Crops 🌾
+          {t("home.heading")} 🌾
         </h2>
 
         <p className="text-base-content/70 mb-6">
-          Hand-picked quality products from verified farmers.
+          {t("home.description")}
         </p>
 
         <CropFilters />
@@ -70,14 +69,14 @@ useEffect(() => {
         {/* Loading */}
         {loading && (
           <p className="mt-10 text-base-content/70 animate-pulse text-center">
-            Loading fresh crops...
+            {t("home.loading")}
           </p>
         )}
 
         {/* Empty */}
         {!loading && crops.length === 0 && (
           <p className="mt-10 text-base-content/70 text-center">
-            No crops found 🌱
+            {t("home.noCrops")} 🌱
           </p>
         )}
 
@@ -88,18 +87,12 @@ useEffect(() => {
               {crops.map((crop) => (
                 <div
                   key={crop.id}
-                  className="
-                    group relative
-                    bg-base-100
-                    border border-base-300
-                    rounded-3xl p-5
-                    shadow-md hover:shadow-xl
-                    transition duration-300
-                  "
+                  className="group relative bg-base-100 border border-base-300
+                  rounded-3xl p-5 shadow-md hover:shadow-xl transition duration-300"
                 >
 
                   <span className="badge badge-success absolute top-4 left-4">
-                    Fresh
+                    {t("home.fresh")}
                   </span>
 
                   {/* Image */}
@@ -121,7 +114,7 @@ useEffect(() => {
                   </h3>
 
                   <p className="text-base-content/70 text-sm">
-                    👨‍🌾 {crop.farmerName || "Verified Farmer"}
+                    👨‍🌾 {crop.farmerName || t("home.verifiedFarmer")}
                   </p>
 
                   {/* Price */}
@@ -137,10 +130,8 @@ useEffect(() => {
                     onClick={() => addToCart(crop.id, 1)}
                     className="btn btn-success w-full mt-4"
                   >
-                    Add to Cart 🛒
+                    {t("home.addToCart")} 🛒
                   </button>
-
-
 
                 </div>
               ))}
@@ -155,11 +146,11 @@ useEffect(() => {
                   onClick={() => setPage(page - 1)}
                   className="btn btn-success disabled:opacity-40"
                 >
-                  ← Prev
+                  ← {t("home.prev")}
                 </button>
 
                 <span className="font-semibold">
-                  Page {page} of {totalPages}
+                  {t("home.page")} {page} {t("home.of")} {totalPages}
                 </span>
 
                 <button
@@ -167,7 +158,7 @@ useEffect(() => {
                   onClick={() => setPage(page + 1)}
                   className="btn btn-success disabled:opacity-40"
                 >
-                  Next →
+                  {t("home.next")} →
                 </button>
 
               </div>

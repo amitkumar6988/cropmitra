@@ -2,9 +2,12 @@ import { useAuthStore } from "../store/authStore";
 import { useRef, useState, useEffect } from "react";
 import FarmerApplyForm from "./FarmerApplyForm";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const ProfileTopBar = () => {
+
   const { user, loading, uploadProfileImage } = useAuthStore();
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
 
@@ -15,16 +18,8 @@ const ProfileTopBar = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [showFarmerForm, setShowFarmerForm] = useState(false);
 
-  //////////////////////////////////////////
-  // ✅ NORMALIZE ROLE (VERY IMPORTANT)
-  //////////////////////////////////////////
-
   const role = user?.role?.toLowerCase();
   const isFarmer = role === "farmer";
-
-  //////////////////////////////////////////
-  // Close dropdown on outside click
-  //////////////////////////////////////////
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -42,41 +37,19 @@ const ProfileTopBar = () => {
 
   return (
     <>
-      {/* ================= TOP BAR ================= */}
+      <div className="w-full sticky top-0 z-40 bg-white/70 backdrop-blur-xl border-b border-white/40 shadow-md">
 
-      <div
-        className="
-        w-full 
-        sticky top-0 z-40
-        bg-white/70 
-        backdrop-blur-xl
-        border-b border-white/40
-        shadow-md
-        "
-      >
         <div className="max-w-7xl mx-auto px-6 h-[88px] flex items-center justify-between">
 
           {/* LEFT SIDE */}
           <div className="flex items-center gap-5">
 
-            {/* Avatar + Dropdown */}
+            {/* Avatar */}
             <div className="relative" ref={menuRef}>
               <div
                 onClick={() => setShowMenu((prev) => !prev)}
-                className="
-                  w-16 h-16
-                  rounded-full
-                  cursor-pointer
-                  overflow-hidden
-                  bg-green-600/10
-                  flex items-center justify-center
-                  font-bold text-green-700
-                  ring-2 ring-white
-                  shadow-sm
-                  hover:scale-105
-                  transition
-                "
-                title="Profile options"
+                className="w-16 h-16 rounded-full cursor-pointer overflow-hidden bg-green-600/10 flex items-center justify-center font-bold text-green-700 ring-2 ring-white shadow-sm hover:scale-105 transition"
+                title={t("profile.options")}
               >
                 {user.profileImage ? (
                   <img
@@ -91,32 +64,20 @@ const ProfileTopBar = () => {
                 )}
               </div>
 
-              {/* DROPDOWN */}
+              {/* Dropdown */}
               {showMenu && (
-                <div
-                  className="
-                    absolute top-20 left-0
-                    bg-white/90 backdrop-blur-lg
-                    border border-white/40
-                    rounded-xl
-                    shadow-xl
-                    w-48
-                    z-50
-                    overflow-hidden
-                  "
-                  onMouseDown={(e) => e.stopPropagation()}
-                >
+                <div className="absolute top-20 left-0 bg-white/90 backdrop-blur-lg border border-white/40 rounded-xl shadow-xl w-48 z-50 overflow-hidden">
+
                   {user.profileImage && (
                     <>
                       <button
-                        type="button"
                         onClick={() => {
                           setShowPreview(true);
                           setShowMenu(false);
                         }}
                         className="w-full text-left px-4 py-3 hover:bg-gray-100 text-sm"
                       >
-                        👁 View Image
+                        👁 {t("profile.viewImage")}
                       </button>
 
                       <div className="border-t"></div>
@@ -124,15 +85,15 @@ const ProfileTopBar = () => {
                   )}
 
                   <button
-                    type="button"
                     onClick={() => {
                       fileRef.current.click();
                       setShowMenu(false);
                     }}
                     className="w-full text-left px-4 py-3 hover:bg-gray-100 text-sm"
                   >
-                    🔄 Change Image
+                    🔄 {t("profile.changeImage")}
                   </button>
+
                 </div>
               )}
             </div>
@@ -160,95 +121,49 @@ const ProfileTopBar = () => {
                 {user.email}
               </p>
 
-              <span
-                className="
-                  inline-block
-                  mt-1
-                  bg-green-100
-                  text-green-700
-                  px-3 py-1
-                  rounded-full
-                  text-xs
-                  font-semibold
-                  capitalize
-                "
-              >
-                {role}
+              <span className="inline-block mt-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold capitalize">
+                {t(`roles.${role}`)}
               </span>
             </div>
+
           </div>
 
           {/* RIGHT SIDE */}
           <div className="flex items-center gap-4">
 
-            {/* ⭐ QUICK ACTION FOR FARMERS */}
             {isFarmer && (
               <button
                 onClick={() => navigate("/farmer/add-crop")}
-                className="
-                  bg-green-600
-                  hover:bg-green-700
-                  text-white
-                  px-6 py-2.5
-                  rounded-xl
-                  font-semibold
-                  shadow-md
-                  transition
-                "
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-xl font-semibold shadow-md transition"
               >
-                + Add Crop
+                + {t("profile.addCrop")}
               </button>
             )}
 
-            {/* BECOME FARMER BUTTON */}
             {!isFarmer ? (
               <button
-                type="button"
                 onClick={() => setShowFarmerForm(true)}
                 disabled={loading}
-                className="
-                  bg-gradient-to-r
-                  from-green-600
-                  to-emerald-500
-                  text-white
-                  px-7 py-3
-                  rounded-xl
-                  text-sm
-                  font-semibold
-                  hover:scale-105
-                  active:scale-95
-                  transition
-                  shadow-md
-                  disabled:opacity-50
-                "
+                className="bg-gradient-to-r from-green-600 to-emerald-500 text-white px-7 py-3 rounded-xl text-sm font-semibold hover:scale-105 active:scale-95 transition shadow-md disabled:opacity-50"
               >
-                Become a Farmer 🌾
+                {t("profile.becomeFarmer")} 🌾
               </button>
             ) : (
-              <span
-                className="
-                  bg-green-100
-                  text-green-700
-                  px-5 py-2.5
-                  rounded-full
-                  text-sm
-                  font-semibold
-                "
-              >
-                Farmer ✔
+              <span className="bg-green-100 text-green-700 px-5 py-2.5 rounded-full text-sm font-semibold">
+                {t("profile.farmer")} ✔
               </span>
             )}
+
           </div>
         </div>
       </div>
 
-      {/* ================= IMAGE PREVIEW ================= */}
-
+      {/* IMAGE PREVIEW */}
       {showPreview && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-5 relative shadow-xl">
+
             <button
-              type="button"
               onClick={() => setShowPreview(false)}
               className="absolute top-2 right-3 text-gray-500 hover:text-black"
             >
@@ -264,12 +179,9 @@ const ProfileTopBar = () => {
         </div>
       )}
 
-      {/* ================= FARMER FORM ================= */}
-
+      {/* FARMER FORM */}
       {showFarmerForm && (
-        <FarmerApplyForm
-          onClose={() => setShowFarmerForm(false)}
-        />
+        <FarmerApplyForm onClose={() => setShowFarmerForm(false)} />
       )}
     </>
   );

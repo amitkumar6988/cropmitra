@@ -14,6 +14,9 @@ import farmerRoutes from "./routes/farmer.routes.js"
 import cartRoutes from "./routes/cart.routes.js"
 import adminRoutes from "./routes/admin.routes.js"
 import addressRoutes from "./routes/address.routes.js";
+import chatRoutes from "./routes/chatRoutes.js";
+import paymentRoutes from "./routes/payment.routes.js"
+
 
 
 
@@ -48,6 +51,15 @@ app.use("/api/orders",orderRoutes)
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/address", addressRoutes);
+app.use("/api/payment", paymentRoutes);
+
+
+app.use("/api", chatRoutes);
+
+// for get key
+app.get("/api/getkey",(req,res)=>{
+    res.status(200).json({key : process.env.RAZORPAY_KEY_ID})
+})
 
 // updated part for live location
 

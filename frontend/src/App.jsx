@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import ChatBot from "./components/ChatBot";
 import {
   BrowserRouter as Router,
   Routes,
@@ -87,8 +88,9 @@ function AppContent() {
           },
         }}
       />
-
+         
       <CartModal />
+      <ChatBot/>
 
       <Routes>
         <Route path="/" element={<LandingPage />} />
@@ -104,6 +106,7 @@ function AppContent() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/track/:orderId" element={<TrackOrder />} />
         <Route path="/delivery" element={<DeliveryTest />} />
+    
 
         {/* FARMER PROTECTED */}
         <Route

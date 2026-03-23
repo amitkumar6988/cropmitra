@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 import "./utils/fixLeafletIcon";
 import './index.css'
 import App from './App.jsx'
+import "./i18n";
 
 
 

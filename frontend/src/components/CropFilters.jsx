@@ -1,15 +1,19 @@
 import { useCropMarketStore } from "../store/cropMarketStore";
-
-const CATEGORY_OPTIONS = [
-  { label: "All Categories", value: "all" },
-  { label: "Fruits", value: "fruits" },
-  { label: "Vegetables", value: "vegetable" },
-  { label: "Grains", value: "grain" },
-  { label: "Pulse", value: "pulse" },
-  { label: "Other", value: "other" },
-];
+import { useTranslation } from "react-i18next";
 
 const CropFilters = () => {
+
+  const { t } = useTranslation();
+
+  const CATEGORY_OPTIONS = [
+    { label: t("filters.allCategories"), value: "all" },
+    { label: t("filters.fruits"), value: "fruits" },
+    { label: t("filters.vegetables"), value: "vegetable" },
+    { label: t("filters.grains"), value: "grain" },
+    { label: t("filters.pulse"), value: "pulse" },
+    { label: t("filters.other"), value: "other" },
+  ];
+
   const {
     search,
     setSearch,
@@ -19,15 +23,15 @@ const CropFilters = () => {
     setOrganic,
     priceSort,
     setPriceSort,
-  }  = useCropMarketStore();
+  } = useCropMarketStore();
 
   return (
     <div className="bg-white p-4 rounded-xl shadow-sm mb-6 grid gap-4 md:grid-cols-4">
-      
+
       {/* Search */}
       <input
         type="text"
-        placeholder="Search crops..."
+        placeholder={t("filters.search")}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="border rounded-lg px-3 py-2"
@@ -52,9 +56,9 @@ const CropFilters = () => {
         onChange={(e) => setOrganic(e.target.value)}
         className="border rounded-lg px-3 py-2"
       >
-        <option value="all">All</option>
-        <option value="true">Organic</option>
-        <option value="false">Non-Organic</option>
+        <option value="all">{t("filters.all")}</option>
+        <option value="true">{t("filters.organic")}</option>
+        <option value="false">{t("filters.nonOrganic")}</option>
       </select>
 
       {/* Price sort */}
@@ -63,10 +67,11 @@ const CropFilters = () => {
         onChange={(e) => setPriceSort(e.target.value)}
         className="border rounded-lg px-3 py-2"
       >
-        <option value="none">Sort by Price</option>
-        <option value="lowToHigh">Low → High</option>
-        <option value="highToLow">High → Low</option>
+        <option value="none">{t("filters.sortPrice")}</option>
+        <option value="lowToHigh">{t("filters.lowHigh")}</option>
+        <option value="highToLow">{t("filters.highLow")}</option>
       </select>
+
     </div>
   );
 };

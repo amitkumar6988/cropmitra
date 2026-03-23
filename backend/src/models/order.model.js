@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 // ✅ Order Item Schema
 const orderItemSchema = new mongoose.Schema({
-  
+
   crop: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Crop",
@@ -21,7 +21,7 @@ const orderItemSchema = new mongoose.Schema({
     required: true
   },
 
-  // 🔥 VERY IMPORTANT (price snapshot)
+  // ⭐ Price Snapshot (very important)
   price: {
     type: Number,
     required: true
@@ -87,6 +87,26 @@ const orderSchema = new mongoose.Schema({
     default: "PENDING"
   },
 
+  // 🔥 RAZORPAY ORDER ID (Before Payment)
+  paymentOrderId: {
+    type: String
+  },
+
+  // 🔥 RAZORPAY PAYMENT ID (After Success)
+  paymentId: {
+    type: String
+  },
+
+  // 🔥 PAYMENT SIGNATURE (Verification)
+  paymentSignature: {
+    type: String
+  },
+
+  // ⭐ Payment Time (Industry Practice)
+  paidAt: {
+    type: Date
+  },
+
   // ⭐ Marketplace future feature
   isFarmerPaid: {
     type: Boolean,
@@ -107,7 +127,6 @@ orderSchema.pre("save", function(next){
 
   next();
 });
-
 
 
 export default mongoose.model("Order", orderSchema);

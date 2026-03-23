@@ -1,6 +1,7 @@
-import { useState  } from "react";
+import { useState } from "react";
 import { useFarmerCropStore } from "../store/farmerCropStore";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const CATEGORY_OPTIONS = [
   "fruit",
@@ -11,8 +12,9 @@ const CATEGORY_OPTIONS = [
 ];
 
 const AddCrop = () => {
-  
-const navigate = useNavigate();
+
+  const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { addCrop, addLoading } = useFarmerCropStore();
 
@@ -42,31 +44,28 @@ const navigate = useNavigate();
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const data = new FormData();
+    const data = new FormData();
 
-  Object.entries(form).forEach(([key, value]) => {
-    if (["quantity", "price", "discount"].includes(key)) {
-      data.append(key, Number(value));
-    } else {
-      data.append(key, value);
+    Object.entries(form).forEach(([key, value]) => {
+      if (["quantity", "price", "discount"].includes(key)) {
+        data.append(key, Number(value));
+      } else {
+        data.append(key, value);
+      }
+    });
+
+    if (image) data.append("image", image);
+
+    const success = await addCrop(data);
+
+    if (success) {
+      setForm(initialState);
+      setImage(null);
+      navigate("/home");
     }
-  });
-
-  if (image) {
-    data.append("image", image);
-  }
-
-  const success = await addCrop(data);
-
-  if (success) {
-    setForm(initialState);
-    setImage(null);
-
-    navigate("/home"); // ✅ REDIRECT
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-green-50 flex justify-center items-center p-6">
@@ -74,7 +73,7 @@ const navigate = useNavigate();
       <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-2xl">
 
         <h2 className="text-3xl font-bold text-green-700 text-center mb-6">
-          🌾 Add New Crop
+          🌾 {t("addCrop.title")}
         </h2>
 
         <form
@@ -82,17 +81,15 @@ const navigate = useNavigate();
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
 
-          {/* Name */}
           <input
             name="name"
             value={form.name}
-            placeholder="Crop Name"
+            placeholder={t("addCrop.cropName")}
             onChange={handleChange}
             className="border p-3 rounded-lg"
             required
           />
 
-          {/* Category */}
           <select
             name="category"
             value={form.category}
@@ -100,28 +97,27 @@ const navigate = useNavigate();
             className="border p-3 rounded-lg"
             required
           >
-            <option value="">Select Category</option>
+            <option value="">
+              {t("addCrop.selectCategory")}
+            </option>
 
             {CATEGORY_OPTIONS.map(cat => (
               <option key={cat} value={cat}>
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                {t(`categories.${cat}`)}
               </option>
             ))}
-
           </select>
 
-          {/* Quantity */}
           <input
             name="quantity"
             type="number"
             value={form.quantity}
-            placeholder="Quantity"
+            placeholder={t("addCrop.quantity")}
             onChange={handleChange}
             className="border p-3 rounded-lg"
             required
           />
 
-          {/* Unit */}
           <select
             name="unit"
             value={form.unit}
@@ -133,28 +129,25 @@ const navigate = useNavigate();
             <option value="quintal">quintal</option>
           </select>
 
-          {/* Price */}
           <input
             name="price"
             type="number"
             value={form.price}
-            placeholder="Price"
+            placeholder={t("addCrop.price")}
             onChange={handleChange}
             className="border p-3 rounded-lg"
             required
           />
 
-          {/* Discount */}
           <input
             name="discount"
             type="number"
             value={form.discount}
-            placeholder="Discount %"
+            placeholder={t("addCrop.discount")}
             onChange={handleChange}
             className="border p-3 rounded-lg"
           />
 
-          {/* Expiry */}
           <input
             type="date"
             name="expiryDate"
@@ -163,26 +156,23 @@ const navigate = useNavigate();
             className="border p-3 rounded-lg"
           />
 
-          {/* Location */}
           <input
             name="location"
             value={form.location}
-            placeholder="Location"
+            placeholder={t("addCrop.location")}
             onChange={handleChange}
             className="border p-3 rounded-lg"
             required
           />
 
-          {/* Description */}
           <textarea
             name="description"
             value={form.description}
-            placeholder="Description"
+            placeholder={t("addCrop.description")}
             onChange={handleChange}
             className="border p-3 rounded-lg md:col-span-2"
           />
 
-          {/* Organic */}
           <label className="flex items-center gap-2 md:col-span-2">
             <input
               type="checkbox"
@@ -190,10 +180,9 @@ const navigate = useNavigate();
               checked={form.organic}
               onChange={handleChange}
             />
-            Organic Crop
+            {t("addCrop.organic")}
           </label>
 
-          {/* Image */}
           <input
             type="file"
             accept="image/*"
@@ -201,12 +190,11 @@ const navigate = useNavigate();
             className="md:col-span-2 border p-2 rounded-lg"
           />
 
-          {/* Submit */}
           <button
             disabled={addLoading}
             className="md:col-span-2 bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold"
           >
-            {addLoading ? "Adding Crop..." : "Add Crop 🌱"}
+            {addLoading ? t("addCrop.adding") : t("addCrop.add")}
           </button>
 
         </form>

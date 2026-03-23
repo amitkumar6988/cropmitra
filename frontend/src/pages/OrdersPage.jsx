@@ -2,8 +2,12 @@ import React, { useEffect } from "react";
 import { useOrderStore } from "../store/orderStore";
 import { useNavigate } from "react-router-dom";
 import appleImg from "../assets/apple.jpg";
+import { useTranslation } from "react-i18next";
 
 const OrdersPage = () => {
+
+  const { t } = useTranslation();
+
   const { orders, fetchMyOrders, loading } = useOrderStore();
   const navigate = useNavigate();
 
@@ -11,29 +15,27 @@ const OrdersPage = () => {
     fetchMyOrders();
   }, [fetchMyOrders]);
 
-  // ✅ Loading
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-lime-50 flex items-center justify-center">
         <p className="text-gray-500 text-lg animate-pulse">
-          Loading your orders...
+          {t("orders.loading")}
         </p>
       </div>
     );
   }
 
-  // ✅ Empty State
   if (!orders || orders.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-lime-50 flex flex-col items-center justify-center text-center">
         <div className="text-7xl mb-4">📦</div>
 
         <h2 className="text-2xl font-bold mb-2">
-          No orders yet
+          {t("orders.emptyTitle")}
         </h2>
 
         <p className="text-gray-500">
-          Your placed orders will appear here 🌾
+          {t("orders.emptySubtitle")}
         </p>
       </div>
     );
@@ -45,33 +47,21 @@ const OrdersPage = () => {
       <div className="max-w-7xl mx-auto px-6 py-10">
 
         <h1 className="text-3xl font-bold mb-2">
-          My Orders 📦
+          {t("orders.myOrders")} 📦
         </h1>
 
         <p className="text-gray-500 mb-8">
-          Quickly review and track your recent purchases.
+          {t("orders.reviewOrders")}
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+
           {orders.flatMap((order) =>
             order.items.map((item, index) => (
               
               <div
                 key={`${order._id}-${index}`}
-                className="
-                  group
-                  relative
-                  bg-white/70
-                  backdrop-blur-xl
-                  border border-white/40
-                  rounded-3xl
-                  p-5
-                  shadow-lg
-                  hover:shadow-2xl
-                  hover:-translate-y-3
-                  transition
-                  duration-500
-                "
+                className="group relative bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-5 shadow-lg hover:shadow-2xl hover:-translate-y-3 transition duration-500"
               >
 
                 {/* STATUS BADGE */}
@@ -91,13 +81,7 @@ const OrdersPage = () => {
                   <img
                     src={item.crop?.images?.[0] || appleImg}
                     alt={item.crop?.name}
-                    className="
-                      object-contain
-                      max-h-full
-                      group-hover:scale-125
-                      transition
-                      duration-500
-                    "
+                    className="object-contain max-h-full group-hover:scale-125 transition duration-500"
                     onError={(e) => {
                       e.currentTarget.src = appleImg;
                     }}
@@ -110,7 +94,7 @@ const OrdersPage = () => {
                 </h3>
 
                 <p className="text-gray-400 text-sm">
-                  Order #{order._id.slice(-6)}
+                  {t("orders.order")} #{order._id.slice(-6)}
                 </p>
 
                 <p className="text-2xl font-extrabold text-green-600 mt-2">
@@ -118,22 +102,22 @@ const OrdersPage = () => {
                 </p>
 
                 <p className="text-sm text-gray-500">
-                  Qty: {item.quantity}
+                  {t("orders.qty")}: {item.quantity}
                 </p>
 
-                {/* ✅ Track Button Only When Shipped */}
                 {order.status?.toLowerCase() === "shipped" && (
                   <button
                     onClick={() => navigate(`/track/${order._id}`)}
                     className="mt-4 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
                   >
-                    Track Order
+                    {t("orders.track")}
                   </button>
                 )}
 
               </div>
             ))
           )}
+
         </div>
 
       </div>

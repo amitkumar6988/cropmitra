@@ -3,8 +3,12 @@ import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useCropMarketStore } from "../store/cropMarketStore";
 import { useCartStore } from "../store/cartStore";
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
+
+  const { t } = useTranslation();
+
   const { user, logout } = useAuthStore();
   const { search, setSearch } = useCropMarketStore();
   const { cartCount } = useCartStore();
@@ -37,7 +41,7 @@ const Navbar = () => {
         <div className="hidden md:flex flex-1 mx-6">
           <input
             type="text"
-            placeholder="Search crops..."
+            placeholder={t("userNavbar.search")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="
@@ -63,7 +67,7 @@ const Navbar = () => {
             to="/orders"
             className="hover:text-green-600 dark:text-gray-200"
           >
-            Orders
+            {t("userNavbar.orders")}
           </Link>
 
           {/* Cart */}
@@ -84,7 +88,7 @@ const Navbar = () => {
             to="/profile"
             className="hover:text-green-600 dark:text-gray-200"
           >
-            Profile
+            {t("userNavbar.profile")}
           </Link>
 
           {/* Logout */}
@@ -98,7 +102,7 @@ const Navbar = () => {
               hover:bg-green-700
             "
           >
-            Logout
+            {t("userNavbar.logout")}
           </button>
 
         </div>

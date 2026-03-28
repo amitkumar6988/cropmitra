@@ -14,6 +14,9 @@ import TrackOrder from "./pages/TrackOrder";
 
 import DeliveryTest from "./pages/DeliveryTest";
 
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
 
 // Pages
 import LandingPage from "./pages/LandingPage";
@@ -98,6 +101,8 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+       <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         {/* USER */}
         <Route path="/profile" element={<Profile />} />

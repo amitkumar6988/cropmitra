@@ -1,5 +1,7 @@
 import FarmerProfile from "../models/farmer.model.js";
 import User from "../models/user.model.js";
+import { sendEmail } from "../libs/sendEmail.js";
+import { farmerApprovedTemplate } from "../templates/farmerApprovedTemplate.js";
 
 // ================= APPLY FOR FARMER =================
 export const applyFarmer = async (req, res) => {
@@ -53,45 +55,56 @@ export const getFarmerRequests = async (req, res) => {
 
 
 export const approveFarmer = async (req, res) => {
-
-  console.log("✅ APPROVE CONTROLLER HIT");
+  console.log("Approve farmer hit");
 
   try {
-
     const farmerProfile = await FarmerProfile.findById(req.params.id);
 
-    console.log("Farmer Profile:", farmerProfile);
+    if (!farmerProfile) {
+      return res.status(404).json({ message: "Farmer profile not found" });
+    }
+
+    if (farmerProfile.isApproved) {
+      return res.status(400).json({ message: "Already approved" });
+    }
 
     const user = await User.findById(farmerProfile.user);
 
-    console.log("USER FOUND:", user);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    // 🔥 FORCE UPDATE
     user.role = "farmer";
-
     await user.save();
-
-    console.log("UPDATED USER:", user);
 
     farmerProfile.isApproved = true;
     await farmerProfile.save();
 
+    console.log("📧 Sending approval email to:", user.email);
+
+    const html = farmerApprovedTemplate(user.name);
+    console.log("HTML GENERATED:", html);
+
+    await sendEmail({
+      to: user.email,
+      subject: "🎉 You are now a Farmer - CropMitra",
+      html: html, // ✅ FIXED
+    });
+
+    console.log("✅ Email function executed");
+
     res.status(200).json({
-      message:"approved"
+      message: "Farmer approved and email sent",
     });
 
   } catch (error) {
-
-    console.log("ERROR:", error);
+    console.error("❌ ERROR:", error);
 
     res.status(500).json({
-      message:"error"
+      message: "Server error",
     });
   }
 };
-
-
-
 
 // ================= GET FARMER PROFILE (LOGGED-IN USER) =================
 export const getMyFarmerProfile = async (req, res) => {

@@ -15,12 +15,11 @@ const router = express.Router();
 router.post("/place", protect, placeOrder);
 router.get("/my", protect, getMyOrders);
 
-// order routes
-
-router.get("/:id", protect, getOrderById);
-
 // Farmer
 router.get("/farmer", protect, getFarmerOrders);
+
+// Dynamic routes LAST
+router.get("/:id", protect, getOrderById);
 router.patch("/:id/status", protect, updateOrderStatus);
 
 export default router;

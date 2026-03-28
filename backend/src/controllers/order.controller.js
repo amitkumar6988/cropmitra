@@ -1,11 +1,16 @@
 import Order from "../models/order.model.js";
+import User from "../models/user.model.js";
 import Cart from "../models/cart.model.js";
 import Crop from "../models/crops.model.js";
 import FarmerProfile from "../models/order.model.js"
+import { newOrderFarmerTemplate } from "../templates/newOrderFarmerTemplate.js";
+import { orderPlacedTemplate } from "../templates/orderPlacedTemplate.js";
+import {sendEmail} from "../libs/sendEmail.js"
 
 // PLACE ORDER
 export const placeOrder = async (req, res) => {
-    const { address, paymentMethod } = req.body; // ⭐ ADD THIS
+  const { address, paymentMethod } = req.body;
+
   const cart = await Cart.findOne({ user: req.user._id }).populate("items.crop");
 
   if (!cart || cart.items.length === 0) {
@@ -14,6 +19,9 @@ export const placeOrder = async (req, res) => {
 
   let totalAmount = 0;
   const orderItems = [];
+
+  // 🔥 Store farmer-wise items
+  const farmerMap = new Map();
 
   for (const item of cart.items) {
     const crop = await Crop.findById(item.crop._id);
@@ -35,15 +43,53 @@ export const placeOrder = async (req, res) => {
       quantity: item.quantity,
       price: item.priceAtAddTime
     });
+
+    // ✅ Group items by farmer
+    if (!farmerMap.has(crop.farmer.toString())) {
+      farmerMap.set(crop.farmer.toString(), []);
+    }
+
+    farmerMap.get(crop.farmer.toString()).push({
+      name: crop.name,
+      quantity: item.quantity
+    });
   }
-const order = await Order.create({
-  buyer: req.user._id,
-  items: orderItems,
-  totalAmount,
-  address, // ⭐ THIS WAS MISSING
-  paymentMethod: paymentMethod || "COD"
-});
+
+  const order = await Order.create({
+    buyer: req.user._id,
+    items: orderItems,
+    totalAmount,
+    address,
+    paymentMethod: paymentMethod || "COD"
+  });
+
   await Cart.findOneAndDelete({ user: req.user._id });
+
+  // ================= 📧 EMAILS =================
+
+  // ✅ 1. Buyer Email
+  sendEmail({
+    to: req.user.email,
+    subject: "🛒 Order Placed - CropMitra",
+    html: orderPlacedTemplate(req.user.name, order._id),
+  });
+
+  // ✅ 2. Farmer Emails (multiple)
+  for (const [farmerId, items] of farmerMap) {
+    const farmer = await User.findById(farmerId);
+
+    if (!farmer) continue;
+
+    sendEmail({
+      to: farmer.email,
+      subject: "🌾 New Order Received - CropMitra",
+      html: newOrderFarmerTemplate(
+        farmer.name,
+        req.user.name,
+        order._id
+      ),
+    });
+  }
 
   res.status(201).json({
     message: "Order placed successfully",
@@ -64,14 +110,26 @@ export const getMyOrders = async (req, res) => {
 };
 // FARMER ORDERS
 export const getFarmerOrders = async (req, res) => {
-  const orders = await Order.find({ "items.farmer": req.user._id })
-    .populate("buyer", "name email")
-    .populate("items.crop", "name");
+  try {
 
-  res.status(200).json({orders});
+    console.log("USER:", req.user);   // ⭐ check this in terminal
+
+    const orders = await Order.find({
+      "items.farmer": req.user._id,
+    })
+      .populate("buyer", "name email")
+      .populate("items.crop", "name");
+
+    res.status(200).json({ orders });
+
+  } catch (error) {
+    console.log("Farmer Order Error:", error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // UPDATE ORDER STATUS (Farmer)
+
 export const updateOrderStatus = async (req, res) => {
   const { status } = req.body;
 
@@ -88,8 +146,10 @@ export const updateOrderStatus = async (req, res) => {
   order.status = status;
   await order.save();
 
-  // ✅ ADD EARNINGS WHEN DELIVERED
+  // ✅ WHEN DELIVERED
   if (status === "DELIVERED") {
+
+    // 💰 Earnings logic (your existing code)
     for (const item of order.items) {
       const farmerProfile = await FarmerProfile.findOne({ user: item.farmer });
 
@@ -105,6 +165,22 @@ export const updateOrderStatus = async (req, res) => {
 
         await farmerProfile.save();
       }
+    }
+
+    // 📧 Buyer Email (ONLY THIS ADDED)
+    const buyer = await User.findById(order.buyer);
+
+    if (buyer) {
+      sendEmail({
+        to: buyer.email,
+        subject: "✅ Order Delivered - CropMitra",
+        html: `
+          <h2>Order Delivered ✅</h2>
+          <p>Hello ${buyer.name || "User"},</p>
+          <p>Your order #${order._id} has been delivered successfully.</p>
+          <p>Thank you for shopping with CropMitra 🌾</p>
+        `,
+      });
     }
   }
 

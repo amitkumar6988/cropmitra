@@ -5,47 +5,42 @@ import toast from "react-hot-toast";
 export const useCartStore = create((set, get) => ({
   // 🛒 CART DATA
   cart: [],
-  loading: false,
+  loading: false,      // fetchCart loading (used by CartPage)
+  adding: false,       // addToCart loading (used by buttons)
 
   // 🟢 CART MODAL (CENTER POPUP)
   cartModalOpen: false,
   openCartModal: () => set({ cartModalOpen: true }),
   closeCartModal: () => set({ cartModalOpen: false }),
 
-  // 🔢 Total items (quantity based)
-  cartCount: () =>
-    get().cart.reduce((sum, item) => sum + item.quantity, 0),
+  // 🔢 Unique items count (matches cart page display)
+  cartCount: () => get().cart.length,
 
   // ✅ Fetch cart
   fetchCart: async () => {
+    set({ loading: true });
     try {
       const res = await axiosInstance.get("/cart/me");
-      set({ cart: res.data.items });
+      set({ cart: res.data.items ?? [] });
     } catch (err) {
-      console.error("Fetch cart failed");
+      set({ cart: [] });
+    } finally {
+      set({ loading: false });
     }
   },
 
   // ✅ Add to cart (ONLY cropId + quantity)
   addToCart: async (cropId, quantity = 1) => {
-    set({ loading: true });
+    set({ adding: true });
     try {
-      await axiosInstance.post("/cart/add", {
-        cropId,
-        quantity,
-      });
-
-      // refresh cart from backend
+      await axiosInstance.post("/cart/add", { cropId, quantity });
       await get().fetchCart();
-
-      // 🔥 OPEN CART MODAL (shows ALL items)
       get().openCartModal();
-
-      toast.success("Add items in cart");
+      toast.success("Added to cart");
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to add to cart");
     } finally {
-      set({ loading: false });
+      set({ adding: false });
     }
   },
 

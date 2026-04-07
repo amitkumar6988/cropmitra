@@ -7,7 +7,7 @@ const CropFilters = () => {
 
   const CATEGORY_OPTIONS = [
     { label: t("filters.allCategories"), value: "all" },
-    { label: t("filters.fruits"), value: "fruits" },
+    { label: t("filters.fruits"), value: "fruit" },
     { label: t("filters.vegetables"), value: "vegetable" },
     { label: t("filters.grains"), value: "grain" },
     { label: t("filters.pulse"), value: "pulse" },
@@ -31,7 +31,7 @@ const CropFilters = () => {
       {/* Search */}
       <input
         type="text"
-        placeholder={t("filters.search")}
+        placeholder={t("filters.search", "Search by name or category…")}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="border rounded-lg px-3 py-2"

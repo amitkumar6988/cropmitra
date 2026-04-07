@@ -18,10 +18,14 @@ const uploadOnCloudinary = async (localFilePath) => {
       resource_type: "auto",
     });
 
-    fs.unlinkSync(localFilePath); //  remove temp file after success
+    // Clean up temp file after successful upload
+    if (fs.existsSync(localFilePath)) fs.unlinkSync(localFilePath);
     return response;
   } catch (error) {
-    fs.unlinkSync(localFilePath); // remove temp file if failed
+    // Clean up temp file on failure — guard against already-deleted file
+    if (localFilePath && fs.existsSync(localFilePath)) {
+      fs.unlinkSync(localFilePath);
+    }
     return null;
   }
 };

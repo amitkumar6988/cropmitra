@@ -14,6 +14,11 @@ export const addToCart = async (req, res) => {
     return res.status(404).json({ message: "Crop not found" });
   }
 
+  // Prevent farmers from adding their own crops to cart
+  if (crop.farmer && crop.farmer.toString() === req.user._id.toString()) {
+    return res.status(400).json({ message: "You cannot add your own crop to cart" });
+  }
+
   let cart = await Cart.findOne({ user: req.user._id });
 
   if (!cart) {

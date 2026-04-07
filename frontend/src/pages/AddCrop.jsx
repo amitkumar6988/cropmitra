@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useFarmerCropStore } from "../store/farmerCropStore";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import PriceInsightWidget from "../components/PriceInsightWidget";
 
 const CATEGORY_OPTIONS = [
   "fruit",
@@ -138,6 +139,17 @@ const AddCrop = () => {
             className="border p-3 rounded-lg"
             required
           />
+
+          {form.name && (
+            <div className="md:col-span-2">
+              <PriceInsightWidget
+                cropName={form.name}
+                cropId={form.name?.toLowerCase().replace(/\s+/g, "-")}
+                currentPrice={parseFloat(form.price) || 0}
+                currentUnit={form.unit}
+              />
+            </div>
+          )}
 
           <input
             name="discount"

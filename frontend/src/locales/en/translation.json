@@ -230,12 +230,16 @@
 
   "cards": {
     "orders": {
-      "title": "My Orders",
+      "title": "My Purchases",
       "desc": "Manage your orders"
     },
     "addresses": {
       "title": "Addresses",
       "desc": "Manage your addresses"
+    },
+    "priceInsights": {
+      "title": "Price insights",
+      "desc": "View predicted crop prices (per kg) and trends"
     },
     "farmerOrders": {
       "title": "Farmer Orders",
@@ -248,6 +252,14 @@
     "myCrops": {
       "title": "My Crops",
       "desc": "View and manage your crops"
+    },
+    "manageBids": {
+      "title": "Manage Bids",
+      "desc": "View and respond to buyer bids"
+    },
+    "myOffers": {
+      "title": "My Bids",
+      "desc": "View and manage farmer counter offers"
     }
   }
 },

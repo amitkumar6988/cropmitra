@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser"
 import cors from "cors"
 dotenv.config()
 import { connectDB } from "./libs/db.js"
+import { connectDB as connectPriceDB } from "../../crop-price-prediction-module/backend/src/config/db.js"
+import { errorHandler } from "./middleware/errorHandler.js"
 import authRoutes from "./routes/auth.route.js"
 import cropsRoutes from "./routes/crops.route.js"
 import orderRoutes from "./routes/orders.route.js"
@@ -16,6 +18,9 @@ import adminRoutes from "./routes/admin.routes.js"
 import addressRoutes from "./routes/address.routes.js";
 import chatRoutes from "./routes/chatRoutes.js";
 import paymentRoutes from "./routes/payment.routes.js"
+import pricePredictionRoutes from "./routes/pricePrediction.routes.js"
+import bidRoutes from "./routes/bid.routes.js"
+import wishlistRoutes from "./routes/wishlist.routes.js"
 
 
 
@@ -35,8 +40,12 @@ app.use(cookieParser())
 app.use(express.urlencoded({extended:true})) 
  
 // connecting to cors
+const allowedOrigins = process.env.CORS_ORIGIN 
+  ? process.env.CORS_ORIGIN.split(",").map(origin => origin.trim())
+  : [/^http:\/\/localhost:\d+$/, /^http:\/\/127\.0\.0\.1:\d+$/];
+
 app.use(cors({
-  origin: "http://localhost:5173", // your Vite frontend
+  origin: allowedOrigins,
   credentials: true, // allow cookies/tokens
 }));
 
@@ -52,6 +61,9 @@ app.use("/api/analytics", analyticsRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/address", addressRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/price-prediction", pricePredictionRoutes);
+app.use("/api/bids", bidRoutes);
+app.use("/api/wishlist", wishlistRoutes);
 
 
 app.use("/api", chatRoutes);
@@ -64,23 +76,21 @@ app.get("/api/getkey",(req,res)=>{
 // updated part for live location
 
 connectDB()
+connectPriceDB(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/cropmitra").catch(err => console.error("Price DB connect error", err));
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true
   }
 });
 
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
-
   // Buyer joins specific order room
   socket.on("joinOrderRoom", (orderId) => {
     socket.join(orderId);
-    console.log("Joined order room:", orderId);
   });
 
   // Delivery agent sends location
@@ -89,10 +99,15 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected");
+    // Connection closed
   });
 });
 
+// Global error handler middleware
+app.use(errorHandler);
+
 server.listen(port, () => {
-  console.log(`Server running on ${port}`);
+  if (process.env.NODE_ENV === "development") {
+    console.log(`Server running on port ${port}`);
+  }
 });

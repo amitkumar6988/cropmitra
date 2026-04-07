@@ -127,7 +127,6 @@ export const approveFarmer = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       success: false,
       message: "Approval failed"
@@ -328,8 +327,6 @@ export const getAllOrders = async (req,res)=>{
    });
 
  }catch(err){
-
-   console.log(err);
 
    res.status(500).json({
      success:false,

@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
-const ProtectedRoute = ({ children, role }) => {
+const ProtectedRoute = ({ children, role, roles }) => {
 
   const { user, loading } = useAuthStore();
 
@@ -15,8 +15,12 @@ const ProtectedRoute = ({ children, role }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // role mismatch
-  if (role && user.role !== role) {
+  // allow one of several roles (e.g. user + farmer + admin)
+  if (roles && Array.isArray(roles) && roles.length > 0) {
+    if (!roles.includes(user.role)) {
+      return <Navigate to="/home" replace />;
+    }
+  } else if (role && user.role !== role) {
     return <Navigate to="/home" replace />;
   }
 

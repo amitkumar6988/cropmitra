@@ -7,7 +7,7 @@ const AdminLayout = () => {
 
   return (
 
-    <div style={{display:"flex", height:"100vh"}}
+    <div style={{display:"flex", minHeight:"100vh"}}
      className="flex-1 p-8 bg-gray-100 min-h-screen"
     >
 
@@ -27,6 +27,7 @@ const AdminLayout = () => {
 <Link to="/admin/users">Users</Link>
 <Link to="/admin/farmers">Farmers</Link>
 <Link to="/admin/orders">Orders</Link>
+<Link to="/admin/price-factors">Price shocks</Link>
 
 
           <button onClick={logout} style={{marginTop:"20px"}}>

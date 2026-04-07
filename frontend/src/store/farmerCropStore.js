@@ -9,6 +9,8 @@ export const useFarmerCropStore = create((set, get) => ({
   fetchLoading: false,
   addLoading: false,
   deleteLoading: false,
+  updateLoading: false,
+  updatingCropId: null,
 
   error: null,
 
@@ -95,6 +97,34 @@ export const useFarmerCropStore = create((set, get) => ({
 
     } finally {
       set({ deleteLoading: false });
+    }
+  },
+
+  //---------------- UPDATE ----------------
+
+  updateCrop: async (id, data) => {
+    if (get().updateLoading) return false;
+
+    set({ updateLoading: true, updatingCropId: id });
+
+    try {
+      const res = await axiosInstance.patch(`/crops/${id}`, data);
+
+      set((state) => ({
+        crops: state.crops.map((crop) =>
+          crop._id === id ? res.data.crop : crop
+        ),
+      }));
+
+      toast.success("Crop updated successfully");
+      return true;
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Failed to update crop"
+      );
+      return false;
+    } finally {
+      set({ updateLoading: false, updatingCropId: null });
     }
   },
 

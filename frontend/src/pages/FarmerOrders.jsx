@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useFarmerOrderStore } from "../store/farmerOrderStore";
 import ProfileTopBar from "../components/ProfileTopbar";
+import FarmerReviews from "../components/FarmerReviews";
+import { useAuthStore } from "../store/authStore";
 
 const FarmerOrders = () => {
   const {
@@ -9,6 +11,8 @@ const FarmerOrders = () => {
     fetchFarmerOrders,
     updateStatus,
   } = useFarmerOrderStore();
+
+  const { user } = useAuthStore();
 
   useEffect(() => {
     fetchFarmerOrders();
@@ -179,6 +183,16 @@ const FarmerOrders = () => {
 
           ))}
         </div>
+
+        {/* ⭐ Farmer Reviews Section */}
+        {user?._id && (
+          <div className="mt-14 bg-white/80 backdrop-blur border border-white/40 rounded-3xl p-8 shadow-md">
+            <h2 className="text-2xl font-bold text-gray-800 mb-1">My Reviews ⭐</h2>
+            <p className="text-sm text-gray-500 mb-4">What buyers say about you</p>
+            <FarmerReviews farmerId={user._id} />
+          </div>
+        )}
+
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ import DashboardNavbar from "./components/Navbar";
 import CartModal from "./components/CartModal";
 import { Toaster } from "react-hot-toast";
 import TrackOrder from "./pages/TrackOrder";
+import ScrollToTop from "./components/ScrollToTop";
 
 import DeliveryTest from "./pages/DeliveryTest";
 
@@ -29,6 +30,12 @@ import OrdersPage from "./pages/OrdersPage";
 import AddCrop from "./pages/AddCrop";
 import MyCrops from "./pages/MyCrops";
 import FarmerOrders from "./pages/FarmerOrders"; // ⭐ NEW
+import MyBidsPage from "./pages/MyBidsPage";
+import FarmerBidsPage from "./pages/FarmerBidsPage";
+import FarmerDashboard from "./pages/FarmerDashboard";
+import BidPaymentPage from "./pages/BidPaymentPage";
+import CropDetailPage from "./pages/CropDetailPage";
+import WishlistPage from "./pages/WishlistPage";
 
 // Admin
 import AdminLayout from "./components/AdminLayout";
@@ -45,6 +52,8 @@ import { useCartStore } from "./store/cartStore";
 import "./App.css";
 import Addresses from "./pages/Addresses";
 import Checkout from "./pages/Checkout";
+import PriceInsightsPage from "./pages/PriceInsightsPage.jsx";
+import AdminPriceFactors from "./pages/AdminPriceFactors.jsx";
 
 //////////////////////////////////////////////////////
 // ⭐ INNER COMPONENT
@@ -80,6 +89,7 @@ function AppContent() {
 
   return (
     <>
+      <ScrollToTop />
       {!shouldHideNavbar && <DashboardNavbar />}
 
       <Toaster
@@ -111,7 +121,19 @@ function AppContent() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/track/:orderId" element={<TrackOrder />} />
         <Route path="/delivery" element={<DeliveryTest />} />
-    
+        <Route path="/bids" element={<ProtectedRoute roles={["user", "farmer"]}><MyBidsPage /></ProtectedRoute>} />
+        <Route path="/payment/:bidId" element={<ProtectedRoute roles={["user", "farmer"]}><BidPaymentPage /></ProtectedRoute>} />
+        <Route path="/crop/:id" element={<CropDetailPage />} />
+        <Route path="/wishlist" element={<ProtectedRoute roles={["user", "farmer"]}><WishlistPage /></ProtectedRoute>} />
+
+        <Route
+          path="/price-insights"
+          element={
+            <ProtectedRoute roles={["user", "farmer", "admin"]}>
+              <PriceInsightsPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* FARMER PROTECTED */}
         <Route
@@ -119,6 +141,24 @@ function AppContent() {
           element={
             <ProtectedRoute role="farmer">
               <FarmerOrders />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/farmer/dashboard"
+          element={
+            <ProtectedRoute role="farmer">
+              <FarmerDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/farmer/bids"
+          element={
+            <ProtectedRoute role="farmer">
+              <FarmerBidsPage />
             </ProtectedRoute>
           }
         />
@@ -154,6 +194,7 @@ function AppContent() {
           <Route path="users" element={<AdminUsers />} />
           <Route path="farmers" element={<AdminFarmers />} />
           <Route path="orders" element={<AdminOrders />} />
+          <Route path="price-factors" element={<AdminPriceFactors />} />
         </Route>
       </Routes>
     </>

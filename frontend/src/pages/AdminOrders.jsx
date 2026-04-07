@@ -13,12 +13,12 @@ const AdminOrders = () => {
 
  // ✅ Stats
  const totalRevenue = orders?.reduce(
-   (acc,order)=> acc + (order.totalPrice || 0),0
+   (acc,order)=> acc + (order.totalAmount || 0),0
  );
 
- const pendingOrders = orders?.filter(o=>o.status==="pending").length;
- const completedOrders = orders?.filter(o=>o.status==="delivered").length;
- const cancelledOrders = orders?.filter(o=>o.status==="cancelled").length;
+ const pendingOrders = orders?.filter(o=>o.status==="PLACED").length;
+ const completedOrders = orders?.filter(o=>o.status==="DELIVERED").length;
+ const cancelledOrders = orders?.filter(o=>o.status==="CANCELLED").length;
 
  return (
 
@@ -117,7 +117,7 @@ No Orders Found 🚜
 {/* Order Details */}
 <td className="p-4 space-y-2">
 
-{order.orderItems?.map((item,index)=>(
+{order.items?.map((item,index)=>(
 <div
  key={index}
  className="bg-slate-50 px-3 py-2 rounded-lg"
@@ -142,25 +142,43 @@ Farmer: {item.farmer?.name}
 
 {/* Amount */}
 <td className="p-4 font-bold text-emerald-600">
-₹ {order.totalPrice}
+₹ {order.totalAmount}
 </td>
 
 {/* Status */}
 <td className="p-4">
 
-{order.status === "pending" && (
-<span className="bg-orange-100 text-orange-600 px-4 py-1 rounded-full text-xs font-bold">
-Pending
+{order.status === "PLACED" && (
+<span className="bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-xs font-bold">
+Placed
 </span>
 )}
 
-{order.status === "delivered" && (
+{order.status === "CONFIRMED" && (
+<span className="bg-purple-100 text-purple-600 px-4 py-1 rounded-full text-xs font-bold">
+Confirmed
+</span>
+)}
+
+{order.status === "SHIPPED" && (
+<span className="bg-yellow-100 text-yellow-600 px-4 py-1 rounded-full text-xs font-bold">
+Shipped
+</span>
+)}
+
+{order.status === "OUT_FOR_DELIVERY" && (
+<span className="bg-orange-100 text-orange-600 px-4 py-1 rounded-full text-xs font-bold">
+Out for Delivery
+</span>
+)}
+
+{order.status === "DELIVERED" && (
 <span className="bg-emerald-100 text-emerald-600 px-4 py-1 rounded-full text-xs font-bold">
 Delivered
 </span>
 )}
 
-{order.status === "cancelled" && (
+{order.status === "CANCELLED" && (
 <span className="bg-red-100 text-red-600 px-4 py-1 rounded-full text-xs font-bold">
 Cancelled
 </span>

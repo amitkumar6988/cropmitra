@@ -55,8 +55,6 @@ export const getFarmerRequests = async (req, res) => {
 
 
 export const approveFarmer = async (req, res) => {
-  console.log("Approve farmer hit");
-
   try {
     const farmerProfile = await FarmerProfile.findById(req.params.id);
 
@@ -80,18 +78,13 @@ export const approveFarmer = async (req, res) => {
     farmerProfile.isApproved = true;
     await farmerProfile.save();
 
-    console.log("📧 Sending approval email to:", user.email);
-
     const html = farmerApprovedTemplate(user.name);
-    console.log("HTML GENERATED:", html);
 
     await sendEmail({
       to: user.email,
       subject: "🎉 You are now a Farmer - CropMitra",
       html: html, // ✅ FIXED
     });
-
-    console.log("✅ Email function executed");
 
     res.status(200).json({
       message: "Farmer approved and email sent",

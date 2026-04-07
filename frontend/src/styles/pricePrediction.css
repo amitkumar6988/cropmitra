@@ -1,0 +1,345 @@
+/* Scoped styles for Price Insights / Admin factors (avoid clashing with Tailwind) */
+.price-prediction-page {
+  --pp-surface: #ffffff;
+  --pp-text: #0f172a;
+  --pp-muted: #64748b;
+  --pp-border: #e2e8f0;
+  --pp-accent: #15803d;
+  --pp-accent-soft: #dcfce7;
+  --pp-danger: #b91c1c;
+  --pp-shadow: 0 10px 40px rgba(15, 23, 42, 0.06);
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0.5rem 0 1.5rem;
+  font-family: "DM Sans", system-ui, sans-serif;
+  color: var(--pp-text);
+}
+
+.price-prediction-page .page-intro h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.75rem;
+}
+
+.price-prediction-page .lede {
+  margin: 0 0 1.25rem;
+  color: var(--pp-muted);
+  max-width: 720px;
+  line-height: 1.55;
+}
+
+.price-prediction-page .toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.price-prediction-page .field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--pp-muted);
+}
+
+.price-prediction-page .field select {
+  min-width: 220px;
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid var(--pp-border);
+  background: var(--pp-surface);
+  font: inherit;
+}
+
+.price-prediction-page .btn {
+  border: none;
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--pp-accent);
+  color: white;
+}
+
+.price-prediction-page .btn.secondary {
+  background: var(--pp-surface);
+  color: var(--pp-text);
+  border: 1px solid var(--pp-border);
+}
+
+.price-prediction-page .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.price-prediction-page .layout-split {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .price-prediction-page .layout-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.price-prediction-page .card {
+  background: var(--pp-surface);
+  border-radius: 16px;
+  padding: 1.25rem;
+  border: 1px solid var(--pp-border);
+  box-shadow: var(--pp-shadow);
+}
+
+.price-prediction-page .card-error {
+  border-color: #fecaca;
+  color: var(--pp-danger);
+}
+
+.price-prediction-page .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.price-prediction-page .card-title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.price-prediction-page .pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.price-prediction-page .pill.success {
+  background: var(--pp-accent-soft);
+  color: var(--pp-accent);
+}
+
+.price-prediction-page .pill.muted {
+  background: #f1f5f9;
+  color: var(--pp-muted);
+}
+
+.price-prediction-page .price-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.price-prediction-page .label {
+  font-size: 0.8rem;
+  color: var(--pp-muted);
+  font-weight: 600;
+}
+
+.price-prediction-page .value-lg {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.price-prediction-page .value {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.price-prediction-page .breakdown {
+  border-top: 1px dashed var(--pp-border);
+  padding-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.price-prediction-page .breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.92rem;
+  color: #334155;
+}
+
+.price-prediction-page .explain {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.price-prediction-page .explain-headline {
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.price-prediction-page .explain ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--pp-muted);
+  font-size: 0.9rem;
+}
+
+.price-prediction-page .chart-card {
+  min-height: 320px;
+}
+
+.price-prediction-page .chart-wrap {
+  height: 300px;
+}
+
+.price-prediction-page .table-wrap {
+  overflow: auto;
+}
+
+.price-prediction-page .data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.price-prediction-page .data-table th,
+.price-prediction-page .data-table td {
+  text-align: left;
+  padding: 0.5rem 0.35rem;
+  border-bottom: 1px solid var(--pp-border);
+}
+
+.price-prediction-page .data-table tr.selected {
+  background: #f0fdf4;
+}
+
+.price-prediction-page .linkish {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--pp-accent);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.price-prediction-page .muted {
+  color: var(--pp-muted);
+}
+
+.price-prediction-page .small {
+  font-size: 0.85rem;
+}
+
+.price-prediction-page .grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.price-prediction-page .factor-card h2 {
+  margin: 0;
+  text-transform: capitalize;
+  font-size: 1.1rem;
+}
+
+.price-prediction-page .factor-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 0.5rem 0;
+}
+
+.price-prediction-page .affected ul {
+  margin: 0.25rem 0 0.75rem;
+  padding-left: 1.1rem;
+  color: var(--pp-muted);
+  font-size: 0.9rem;
+}
+
+.price-prediction-page .search-field {
+  width: 100%;
+  max-width: 520px;
+  margin-bottom: 1rem;
+}
+
+.price-prediction-page .search-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.price-prediction-page .search-icon {
+  position: absolute;
+  left: 0.75rem;
+  color: var(--pp-muted);
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.price-prediction-page .search-input {
+  width: 100%;
+  padding: 0.6rem 0.75rem 0.6rem 2.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--pp-border);
+  background: var(--pp-surface);
+  font: inherit;
+}
+
+.price-prediction-page .search-input:focus {
+  outline: 2px solid var(--pp-accent-soft);
+  border-color: var(--pp-accent);
+}
+
+.price-prediction-page .search-input:disabled {
+  opacity: 0.6;
+}
+
+.price-prediction-page .search-empty {
+  margin: 0 0 0.75rem;
+}
+
+.price-prediction-page .unit-note {
+  font-size: 0.85rem;
+  color: var(--pp-muted);
+  margin: 0 0 1rem;
+  line-height: 1.45;
+}
+
+.price-prediction-page .qty-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--pp-border);
+}
+
+.price-prediction-page .field.inline {
+  flex-direction: column;
+}
+
+.price-prediction-page .field.inline input[type="number"] {
+  width: 120px;
+  padding: 0.5rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid var(--pp-border);
+  font: inherit;
+}
+
+.price-prediction-page .qty-total .label {
+  margin-bottom: 0.2rem;
+}
+
+.price-prediction-page .table-hint {
+  margin: 0 0 0.5rem;
+}
+
+.price-prediction-page .data-table .col-sample {
+  white-space: nowrap;
+}

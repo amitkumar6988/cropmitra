@@ -1,19 +1,41 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useCropMarketStore } from "../store/cropMarketStore";
 import { useCartStore } from "../store/cartStore";
 import { useTranslation } from "react-i18next";
+import NotificationBell from "./NotificationBell";
 
 const Navbar = () => {
 
   const { t } = useTranslation();
 
-  const { user, logout } = useAuthStore();
+  const { user, loading, logout } = useAuthStore();
   const { search, setSearch } = useCropMarketStore();
   const { cartCount } = useCartStore();
+  const navigate  = useNavigate();
+  const location  = useLocation();
 
-  if (!user) return null;
+  // On Enter: navigate to /home with ?search= so results show from any page
+  const handleKeyDown = (e) => {
+    if (e.key !== "Enter") return;
+    const query = e.target.value.trim();
+    if (!query) return;
+    if (location.pathname !== "/home") {
+      navigate(`/home?search=${encodeURIComponent(query)}`);
+    }
+    // If already on /home, setSearch already fired via onChange — nothing extra needed
+  };
+
+  // Don't render navbar on public pages (no user and not loading)
+  if (!user && !loading) return null;
+
+  // While rehydrating, show a minimal placeholder to avoid layout shift
+  if (!user && loading) {
+    return (
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm sticky top-0 z-50 h-16" />
+    );
+  }
 
   return (
     <header
@@ -44,6 +66,7 @@ const Navbar = () => {
             placeholder={t("userNavbar.search")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="
               w-full
               border
@@ -70,6 +93,27 @@ const Navbar = () => {
             {t("userNavbar.orders")}
           </Link>
 
+          <Link
+            to="/bids"
+            className="hover:text-green-600 dark:text-gray-200"
+          >
+            My Bids
+          </Link>
+
+          <Link
+            to="/wishlist"
+            className="hover:text-green-600 dark:text-gray-200"
+          >
+            ❤️ Wishlist
+          </Link>
+
+          <Link
+            to="/price-insights"
+            className="hover:text-green-600 dark:text-gray-200"
+          >
+            Price insights
+          </Link>
+
           {/* Cart */}
           <Link to="/cart" className="relative dark:text-gray-200">
             🛒
@@ -83,6 +127,8 @@ const Navbar = () => {
               </span>
             )}
           </Link>
+
+          <NotificationBell />
 
           <Link
             to="/profile"

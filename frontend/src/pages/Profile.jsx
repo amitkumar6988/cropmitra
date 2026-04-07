@@ -1,4 +1,4 @@
-import ProfileTopBar from "../components/ProfileTopBar";
+import ProfileTopBar from "../components/ProfileTopbar";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -26,14 +26,29 @@ const Profile = () => {
   }
 
   const cards = [
+    // Row 1: My Orders | My Offers
     { title: "orders", icon: "📦", path: "/orders" },
-    { title: "addresses", icon: "📍", path: "/addresses" },
+    { title: "myOffers", icon: "🤝", path: "/bids" },
 
+    // Row 2 (farmer only): Farmer Orders | Manage Bids
     ...(user?.role === "farmer"
       ? [
           { title: "farmerOrders", icon: "🚜", path: "/farmer/orders" },
-          { title: "addCrop", icon: "🌾", path: "/farmer/add-crop" },
+          { title: "manageBids", icon: "📋", path: "/farmer/bids" },
+        ]
+      : []),
+
+    // Row 3: Price Insights | Add Crop (farmer) or Addresses (user)
+    { title: "priceInsights", icon: "📈", path: "/price-insights" },
+    ...(user?.role === "farmer"
+      ? [{ title: "addCrop", icon: "🌾", path: "/farmer/add-crop" }]
+      : [{ title: "addresses", icon: "📍", path: "/addresses" }]),
+
+    // Row 4: My Crops (farmer) | Addresses (farmer)
+    ...(user?.role === "farmer"
+      ? [
           { title: "myCrops", icon: "🌱", path: "/farmer/my-crops" },
+          { title: "addresses", icon: "📍", path: "/addresses" },
         ]
       : []),
   ];

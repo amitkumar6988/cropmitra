@@ -111,9 +111,6 @@ export const getMyOrders = async (req, res) => {
 // FARMER ORDERS
 export const getFarmerOrders = async (req, res) => {
   try {
-
-    console.log("USER:", req.user);   // ⭐ check this in terminal
-
     const orders = await Order.find({
       "items.farmer": req.user._id,
     })
@@ -123,7 +120,6 @@ export const getFarmerOrders = async (req, res) => {
     res.status(200).json({ orders });
 
   } catch (error) {
-    console.log("Farmer Order Error:", error);
     res.status(500).json({ message: error.message });
   }
 };

@@ -25,7 +25,6 @@ User question: ${message}`
     res.json({ reply });
 
   } catch (error) {
-    console.log("Chatbot error:", error);
     res.status(500).json({ error: "Chatbot failed" });
   }
 };

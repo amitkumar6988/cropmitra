@@ -82,6 +82,12 @@ const cropSchema = new mongoose.Schema({
     type: String 
   },
 
+  // Optional bulk pricing tiers — backward compatible (absent = use flat price)
+  bulkPricing: [{
+    minQty: { type: Number, required: true },
+    price:  { type: Number, required: true }
+  }],
+
 }, { 
   timestamps: true,
   toJSON: { virtuals: true },

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   User,
   PlusCircle,
@@ -8,6 +9,7 @@ import {
   Share2,
   MapPin,
   Truck,
+  ShoppingCart,
 } from "lucide-react";
 
 import farmer from "../assets/farmer.jpg";
@@ -16,6 +18,7 @@ import Certifications from "../components/Certifications";
 import Reviews from "../components/Reviews";
 
 const ProfileFarmerSidebar = ({ user }) => {
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("dashboard");
 
   // Toggle open / close
@@ -25,6 +28,10 @@ const ProfileFarmerSidebar = ({ user }) => {
 
   const handleAddCropClick = () => {
     document.getElementById("add_crop_modal").showModal();
+  };
+
+  const handleManageBidsClick = () => {
+    navigate("/farmer/bids");
   };
 
   return (
@@ -68,6 +75,12 @@ const ProfileFarmerSidebar = ({ user }) => {
           icon={<PlusCircle size={20} />}
           label="Add New Crop"
           onClick={handleAddCropClick}
+        />
+
+        <SidebarItem
+          icon={<ShoppingCart size={20} />}
+          label="Manage Bids"
+          onClick={handleManageBidsClick}
         />
 
         <SidebarItem

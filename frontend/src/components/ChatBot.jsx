@@ -1,6 +1,28 @@
 import { useState, useRef, useEffect } from "react";
 import { axiosInstance } from "../libs/axios";
 
+// Fallback responses used when the Gemini API is unavailable
+const getFallbackResponse = (input) => {
+  const msg = input.toLowerCase();
+  if (msg.includes("price") || msg.includes("rate"))
+    return "You can check live market prices in the price ticker at the top of the marketplace.";
+  if (msg.includes("sell") || msg.includes("add crop") || msg.includes("list"))
+    return "Go to your Profile and click 'Add Crop' to start listing your produce for sale.";
+  if (msg.includes("bid") || msg.includes("offer") || msg.includes("negotiate"))
+    return "You can place bids on any crop from the marketplace. Farmers can accept, reject, or counter your offer.";
+  if (msg.includes("order") || msg.includes("track"))
+    return "Track your orders from the 'My Orders' section in your profile or navbar.";
+  if (msg.includes("cart"))
+    return "Add crops to your cart from the marketplace and proceed to checkout when ready.";
+  if (msg.includes("farmer") || msg.includes("register") || msg.includes("become"))
+    return "You can upgrade to a Farmer account from your Profile page to start selling crops.";
+  if (msg.includes("payment") || msg.includes("pay"))
+    return "We support Cash on Delivery (COD) and online payment options at checkout.";
+  if (msg.includes("hello") || msg.includes("hi") || msg.includes("hey"))
+    return "Hello! I'm the CropMitra assistant 🌱 Ask me about prices, crops, bids, orders, or anything else!";
+  return "I'm here to help! Try asking about prices, adding crops, placing bids, or tracking orders.";
+};
+
 export default function ChatBot() {
 
 const [message,setMessage] = useState("");
@@ -20,7 +42,8 @@ const sendMessage = async () => {
 
 if(!message.trim()) return;
 
-const userMessage = {type:"user",text:message};
+const userInput = message;
+const userMessage = {type:"user",text:userInput};
 
 setMessages(prev => [...prev,userMessage]);
 setMessage("");
@@ -28,7 +51,7 @@ setLoading(true);
 
 try{
 
-const res = await axiosInstance.post("/chat",{message});
+const res = await axiosInstance.post("/chat",{message: userInput});
 
 setMessages(prev => [
 ...prev,
@@ -36,7 +59,12 @@ setMessages(prev => [
 ]);
 
 }catch(err){
-console.log(err);
+  // API unavailable — use local fallback after a short delay for natural feel
+  await new Promise(r => setTimeout(r, 400));
+  setMessages(prev => [
+    ...prev,
+    {type:"bot", text: getFallbackResponse(userInput)}
+  ]);
 }
 
 setLoading(false);

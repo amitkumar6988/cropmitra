@@ -20,14 +20,30 @@ const CartPage = () => {
 
   useEffect(() => {
     fetchCart();
-  }, [fetchCart]);
+  // fetchCart is stable (zustand), but omit from deps to prevent infinite loop
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const totalAmount = cart.reduce(
-    (sum, item) => sum + item.crop.price * item.quantity,
+  // Show loading state while cart is being fetched
+  const { loading } = useCartStore();
+
+  // Guard: cart items may have a null/unpopulated crop if data is stale
+  const safeCart = (cart || []).filter((item) => item?.crop?._id);
+
+  const totalAmount = safeCart.reduce(
+    (sum, item) => sum + (item.crop.price || item.priceAtAddTime || 0) * item.quantity,
     0
   );
 
-  if (!cart || cart.length === 0) {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-lime-50 flex items-center justify-center">
+        <p className="text-gray-400 animate-pulse text-lg">Loading cart…</p>
+      </div>
+    );
+  }
+
+  if (!safeCart || safeCart.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-lime-50 flex flex-col items-center justify-center text-center">
         <div className="text-7xl mb-4">🛒</div>
@@ -67,7 +83,7 @@ const CartPage = () => {
 
           {/* CART ITEMS */}
           <div className="lg:col-span-2 space-y-6">
-            {cart.map((item) => (
+            {safeCart.map((item) => (
               <div
                 key={item.crop._id}
                 className="group bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-5 shadow-lg hover:shadow-2xl transition duration-300 flex flex-col sm:flex-row gap-6"
@@ -154,7 +170,7 @@ const CartPage = () => {
 
             <div className="flex justify-between text-gray-600 mb-2">
               <span>{t("cart.items")}</span>
-              <span>{cart.length}</span>
+              <span>{safeCart.length}</span>
             </div>
 
             <div className="flex justify-between text-gray-600 mb-2">
@@ -175,7 +191,7 @@ const CartPage = () => {
 
             <button
               onClick={() => navigate("/checkout")}
-              disabled={cart.length === 0}
+              disabled={safeCart.length === 0}
               className="w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white py-3 rounded-2xl font-semibold hover:scale-[1.02] active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {t("cart.checkout")} →

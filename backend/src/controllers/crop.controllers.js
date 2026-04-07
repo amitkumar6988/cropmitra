@@ -274,3 +274,26 @@ export const getAvailableCrops = async (req, res) => {
     res.status(500).json({ message: "Server error while fetching crops" });
   }
 };
+
+// Public — single crop detail by ID
+export const getCropById = async (req, res) => {
+  try {
+    const crop = await Crop.findById(req.params.id)
+      .populate("farmer", "name location profileImage")
+      .lean();
+
+    if (!crop) {
+      return res.status(404).json({ message: "Crop not found" });
+    }
+
+    res.status(200).json({
+      ...crop,
+      id: crop._id.toString(),
+      quantityAvailable: crop.quantity - crop.sold,
+      farmerName: crop.farmer?.name,
+    });
+  } catch (error) {
+    console.error("Get Crop By ID Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

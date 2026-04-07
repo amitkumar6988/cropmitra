@@ -10,6 +10,8 @@ const CartModal = () => {
     updateQuantity,
   } = useCartStore();
 
+  const safeCart = cart.filter((item) => item?.crop?._id);
+
   const navigate = useNavigate();
 
   if (!cartModalOpen) return null;
@@ -27,7 +29,7 @@ const CartModal = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">
-            My Cart ({cart.length} items)
+            My Cart ({safeCart.length} items)
           </h2>
           <button
             onClick={closeCartModal}
@@ -39,7 +41,8 @@ const CartModal = () => {
 
         {/* Cart Items */}
         <div className="space-y-4 max-h-64 overflow-y-auto">
-          {cart.map((item) => (
+          {safeCart
+            .map((item) => (
             <div
               key={item.crop._id}
               className="flex items-center gap-4 border-b pb-3"
@@ -82,7 +85,7 @@ const CartModal = () => {
               </div>
 
               <p className="font-semibold">
-                ₹{item.crop.price * item.quantity}
+                ₹{(item.crop.price ?? 0) * item.quantity}
               </p>
             </div>
           ))}

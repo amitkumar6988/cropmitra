@@ -4,7 +4,8 @@ import {
   updateCrop,
   deleteCrop,
   getMyCrops,
-  getAvailableCrops
+  getAvailableCrops,
+  getCropById
 } from "../controllers/crop.controllers.js";
 import { upload } from "../middleware/multer.middleware.js";
 
@@ -32,6 +33,7 @@ router.delete("/:id", protect, farmerOnly, deleteCrop);
 router.get("/me", protect, farmerOnly, getMyCrops);
 
 // Buyer routes
-router.get("/", getAvailableCrops); // no auth required to browse crops
+router.get("/", getAvailableCrops);       // no auth required to browse crops
+router.get("/:id", getCropById);          // public single crop detail
 
 export default router;

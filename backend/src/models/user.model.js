@@ -38,6 +38,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: ""
     },
+    // Wishlist — array of crop IDs (additive, optional)
+    wishlist: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Crop"
+    }],
     // for password reset
   resetPasswordToken: String,
   resetPasswordExpire: Date,

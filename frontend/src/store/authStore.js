@@ -117,7 +117,11 @@ export const useAuthStore = create(
 
         } catch (err) {
 
-          set({ user: null });
+          // Only clear user on explicit 401 (invalid/expired token).
+          // Network errors or 5xx should NOT wipe a persisted user.
+          if (err.response?.status === 401) {
+            set({ user: null });
+          }
 
         } finally {
 

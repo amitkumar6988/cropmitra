@@ -1,0 +1,124 @@
+{
+  "GET /api/crops": {
+    "success": true,
+    "data": [
+      {
+        "_id": "67f0a1b2c3d4e5f678901234",
+        "name": "Wheat",
+        "basePrice": 2125,
+        "seasonalFactor": { "inSeason": 0.98, "offSeason": 1.08 },
+        "inSeasonStartMonth": 3,
+        "inSeasonEndMonth": 5
+      }
+    ]
+  },
+  "GET /api/prices?cropId=<id>": {
+    "success": true,
+    "data": {
+      "cropId": "67f0a1b2c3d4e5f678901234",
+      "cropName": "Wheat",
+      "minPrice": 2140.5,
+      "maxPrice": 2455.2,
+      "finalPrice": 2298.4,
+      "breakdown": {
+        "basePrice": 2125,
+        "seasonalMultiplier": 1.08,
+        "demandSupplyMultiplier": 1.12,
+        "externalMultiplier": 1.08
+      },
+      "meta": {
+        "inSeason": false,
+        "latestMarketDate": "2026-04-01T10:00:00.000Z",
+        "supply": 2100,
+        "demand": 2650
+      },
+      "explanation": {
+        "headline": "Price increased due to high demand and off-season",
+        "details": [
+          "off-season pricing applies",
+          "demand exceeds supply, pushing prices up",
+          "active external events: fuel_crisis"
+        ]
+      }
+    }
+  },
+  "GET /api/prices (no cropId — all crops)": {
+    "success": true,
+    "data": [
+      {
+        "cropName": "Wheat",
+        "minPrice": 2140.5,
+        "maxPrice": 2455.2,
+        "finalPrice": 2298.4,
+        "breakdown": {
+          "basePrice": 2125,
+          "seasonalMultiplier": 1.08,
+          "demandSupplyMultiplier": 1.12,
+          "externalMultiplier": 1.08
+        }
+      }
+    ]
+  },
+  "GET /api/prices/history?cropId=<id>&limit=90": {
+    "success": true,
+    "data": {
+      "cropName": "Wheat",
+      "points": [
+        {
+          "date": "2026-02-01T00:00:00.000Z",
+          "finalPrice": 2180.4,
+          "minPrice": 2049.58,
+          "maxPrice": 2354.83
+        }
+      ]
+    }
+  },
+  "POST /api/market-data": {
+    "request": {
+      "crop": "67f0a1b2c3d4e5f678901234",
+      "supply": 2200,
+      "demand": 2800,
+      "date": "2026-04-04T12:00:00.000Z"
+    },
+    "response": {
+      "success": true,
+      "data": {
+        "_id": "67f0a1b2c3d4e5f678901299",
+        "crop": "67f0a1b2c3d4e5f678901234",
+        "supply": 2200,
+        "demand": 2800,
+        "date": "2026-04-04T12:00:00.000Z"
+      }
+    }
+  },
+  "POST /api/external-factors": {
+    "request": {
+      "type": "war",
+      "impact": 1.25,
+      "affectedCrops": ["67f0a1b2c3d4e5f678901234"],
+      "startDate": "2026-01-01T00:00:00.000Z",
+      "endDate": "2026-12-31T23:59:59.000Z",
+      "isActive": true
+    },
+    "response": {
+      "success": true,
+      "data": {
+        "type": "war",
+        "impact": 1.25,
+        "isActive": true
+      }
+    }
+  },
+  "PATCH /api/external-factors/:id/toggle": {
+    "request": { "isActive": false },
+    "response": {
+      "success": true,
+      "data": {
+        "_id": "67f0a1b2c3d4e5f678901300",
+        "type": "flood",
+        "isActive": false,
+        "affectedCrops": [{ "name": "Rice (Paddy)" }]
+      }
+    }
+  }
+}

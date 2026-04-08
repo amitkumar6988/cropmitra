@@ -7,7 +7,7 @@ export const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-const AUTH_ROUTES = ["/auth/login", "/auth/signup", "/auth/me"];
+const AUTH_ROUTES = ["/auth/login", "/auth/signup", "/auth/me", "/chat"];
 
 let isSessionExpiredHandled = false;
 

@@ -66,10 +66,14 @@ export const useAuthStore = create(
 
           set({ user });
 
-          toast.success(res.data.message || "Logged in successfully!");
-             
+          // Reset session-expired flag so interceptor works fresh after login
+          import("../libs/axios").then(({ resetSessionExpiredFlag }) => {
+            resetSessionExpiredFlag();
+          });
 
-          return user; // ✅ return user instead of true
+          toast.success(res.data.message || "Logged in successfully!");
+
+          return user;
             
 
         } catch (err) {

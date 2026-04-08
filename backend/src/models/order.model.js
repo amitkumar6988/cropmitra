@@ -111,6 +111,13 @@ const orderSchema = new mongoose.Schema({
   isFarmerPaid: {
     type: Boolean,
     default: false
+  },
+
+  // Reverse link to bid (null for cart-based orders)
+  bidId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Bid",
+    default: null
   }
 
 }, { timestamps: true });

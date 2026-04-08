@@ -15,21 +15,9 @@ export default function FarmerBidsPage() {
   const fetchBids = async () => {
     setLoading(true);
     try {
-      // Fetch all statuses in parallel since backend defaults to "pending" when no status given
-      const statuses = ["pending", "counter_offered", "accepted", "rejected"];
-      const results = await Promise.all(
-        statuses.map(s => axiosInstance.get(`/bids/farmer/pending?status=${s}`))
-      );
-      const combined = results.flatMap(r => r.data.bids || []);
-      
-      console.log("=== ALL BIDS FETCHED ===");
-      console.log("Total bids:", combined.length);
-      console.log("Accepted bids:", combined.filter(b => b.status === "accepted").length);
-      console.log("Pending bids:", combined.filter(b => b.status === "pending").length);
-      console.log("Counter offered bids:", combined.filter(b => b.status === "counter_offered").length);
-      console.log("Rejected bids:", combined.filter(b => b.status === "rejected").length);
-      
-      setAllBids(combined);
+      // Single call — backend returns all statuses when no status param given
+      const res = await axiosInstance.get("/bids/farmer/pending");
+      setAllBids(res.data.bids || []);
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to fetch bids");
     } finally {

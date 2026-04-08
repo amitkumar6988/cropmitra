@@ -2,7 +2,7 @@ import Order from "../models/order.model.js";
 import User from "../models/user.model.js";
 import Cart from "../models/cart.model.js";
 import Crop from "../models/crops.model.js";
-import FarmerProfile from "../models/order.model.js"
+import FarmerProfile from "../models/farmer.model.js"
 import { newOrderFarmerTemplate } from "../templates/newOrderFarmerTemplate.js";
 import { orderPlacedTemplate } from "../templates/orderPlacedTemplate.js";
 import {sendEmail} from "../libs/sendEmail.js"
@@ -134,6 +134,15 @@ export const updateOrderStatus = async (req, res) => {
     return res.status(404).json({ message: "Order not found" });
   }
 
+  // Only farmers associated with this order can update its status
+  const isFarmerInOrder = order.items.some(
+    item => item.farmer.toString() === req.user._id.toString()
+  );
+
+  if (!isFarmerInOrder) {
+    return res.status(403).json({ message: "Not authorized to update this order" });
+  }
+
   // Prevent duplicate earnings
   if (order.status === "DELIVERED") {
     return res.status(400).json({ message: "Order already delivered" });
@@ -147,6 +156,7 @@ export const updateOrderStatus = async (req, res) => {
 
     // 💰 Earnings logic (your existing code)
     for (const item of order.items) {
+      console.log("Updating earnings for farmer:", item.farmer);
       const farmerProfile = await FarmerProfile.findOne({ user: item.farmer });
 
       if (farmerProfile) {

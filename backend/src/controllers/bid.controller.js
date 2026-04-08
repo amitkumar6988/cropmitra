@@ -7,6 +7,21 @@ import { sendEmail } from "../libs/sendEmail.js";
 import { newOrderFarmerTemplate } from "../templates/newOrderFarmerTemplate.js";
 import { orderPlacedTemplate } from "../templates/orderPlacedTemplate.js";
 
+// ================== HELPER: mark expired pending/counter_offered bids in DB ==================
+const markExpiredBids = async (bids) => {
+  const now = new Date();
+  const toExpire = bids.filter(
+    b => new Date(b.expiryDate) < now && (b.status === "pending" || b.status === "counter_offered")
+  );
+  if (toExpire.length === 0) return;
+  await Bid.updateMany(
+    { _id: { $in: toExpire.map(b => b._id) } },
+    { $set: { status: "expired" } }
+  );
+  // Reflect in the in-memory objects so the response is already correct
+  toExpire.forEach(b => { b.status = "expired"; });
+};
+
 // ================== BUYER SUBMITS BID ==================
 export const submitBid = async (req, res) => {
   try {
@@ -145,7 +160,8 @@ const createOrderFromBid = async (bid) => {
     totalAmount: bid.finalPrice * bid.finalQuantity,
     paymentMethod: "COD",
     paymentStatus: "PENDING",
-    status: "PLACED"
+    status: "PLACED",
+    bidId: bid._id
   });
 
   const buyer = await User.findById(bid.buyer);
@@ -177,21 +193,14 @@ const createOrderFromBid = async (bid) => {
 // ================== FARMER VIEWS PENDING BIDS ==================
 export const getFarmerBids = async (req, res) => {
   try {
-    const { status = "pending" } = req.query;
-    
-    console.log("=== GET FARMER BIDS ===");
-    console.log("Farmer ID:", req.user._id);
-    console.log("Status filter:", status);
+    const { status } = req.query;
 
-    const query = {
-      farmer: req.user._id
-    };
-    
+    const query = { farmer: req.user._id };
+
+    // Only filter by status if explicitly provided
     if (status) {
       query.status = status;
     }
-    
-    console.log("Query:", query);
 
     const bids = await Bid.find(query)
       .populate("crop", "name images price quantity unit")
@@ -199,18 +208,11 @@ export const getFarmerBids = async (req, res) => {
       .populate("order")
       .sort({ createdAt: -1 });
 
-    console.log("Bids found:", bids.length);
+    await markExpiredBids(bids);
 
-    res.status(200).json({ 
-      success: true,
-      bids 
-    });
+    res.status(200).json({ success: true, bids });
   } catch (error) {
-    console.error("Error in getFarmerBids:", error);
-    res.status(500).json({ 
-      success: false,
-      message: error.message 
-    });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -229,6 +231,8 @@ export const getBuyerBids = async (req, res) => {
       .populate("farmer", "name email location")
       .populate("order")
       .sort({ createdAt: -1 });
+
+    await markExpiredBids(bids);
 
     res.status(200).json({ bids });
   } catch (error) {
@@ -258,6 +262,10 @@ export const counterOfferBid = async (req, res) => {
       return res.status(400).json({
         message: "Can only counter offer on pending or counter offered bids"
       });
+    }
+
+    if (new Date(bid.expiryDate) < new Date()) {
+      return res.status(400).json({ message: "This bid has expired and can no longer be modified" });
     }
 
     // Add to negotiation history
@@ -308,6 +316,10 @@ export const acceptBid = async (req, res) => {
       return res.status(400).json({
         message: "Can only accept pending or counter offered bids"
       });
+    }
+
+    if (new Date(bid.expiryDate) < new Date()) {
+      return res.status(400).json({ message: "This bid has expired and can no longer be accepted" });
     }
 
     // Get latest counter offer or initial bid
@@ -424,6 +436,10 @@ export const updateBid = async (req, res) => {
       return res.status(400).json({ success: false, message: "Cannot edit an accepted or rejected bid" });
     }
 
+    if (new Date(bid.expiryDate) < new Date()) {
+      return res.status(400).json({ success: false, message: "This bid has expired and can no longer be edited" });
+    }
+
     const crop = await Crop.findById(bid.crop);
     if (crop) {
       const available = crop.quantity - crop.sold;
@@ -478,6 +494,10 @@ export const acceptCounterOffer = async (req, res) => {
       return res.status(400).json({
         message: "Bid must be counter offered to accept"
       });
+    }
+
+    if (new Date(bid.expiryDate) < new Date()) {
+      return res.status(400).json({ message: "This bid has expired and can no longer be accepted" });
     }
 
     // Get latest counter offer

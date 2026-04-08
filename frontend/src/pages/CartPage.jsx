@@ -31,7 +31,7 @@ const CartPage = () => {
   const safeCart = (cart || []).filter((item) => item?.crop?._id);
 
   const totalAmount = safeCart.reduce(
-    (sum, item) => sum + (item.crop.price || item.priceAtAddTime || 0) * item.quantity,
+    (sum, item) => sum + (item.priceAtAddTime || item.crop.price || 0) * item.quantity,
     0
   );
 
@@ -109,7 +109,7 @@ const CartPage = () => {
                   </h3>
 
                   <p className="text-gray-500">
-                    ₹{item.crop.price} / {item.crop.unit}
+                    ₹{item.priceAtAddTime || item.crop.price} / {item.crop.unit}
                   </p>
 
                   <p className="text-sm text-gray-400 mt-1">
@@ -146,7 +146,7 @@ const CartPage = () => {
 
                 <div className="flex sm:flex-col justify-between items-end">
                   <p className="text-xl font-extrabold text-green-600">
-                    ₹{item.crop.price * item.quantity}
+                    ₹{(item.priceAtAddTime || item.crop.price) * item.quantity}
                   </p>
 
                   <button

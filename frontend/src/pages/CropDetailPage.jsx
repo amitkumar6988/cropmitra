@@ -150,7 +150,7 @@ export default function CropDetailPage() {
   const navigate      = useNavigate();
   const { addToCart } = useCartStore();
   const { getPrediction } = usePricePredictions();
-  const { toggle: toggleWishlist, isWishlisted, fetchWishlist } = useWishlistStore();
+  const { toggle: toggleWishlist, isWishlisted, isToggling, fetchWishlist } = useWishlistStore();
 
   useEffect(() => { fetchWishlist(); }, []);
 
@@ -284,9 +284,10 @@ export default function CropDetailPage() {
             </button>
             <button
               onClick={() => toggleWishlist(crop.id || crop._id)}
+              disabled={isToggling(crop.id || crop._id)}
               className="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-xl border transition
                 hover:scale-105 active:scale-95
-                border-red-200 text-red-500 hover:bg-red-50"
+                border-red-200 text-red-500 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
               title={isWishlisted(crop.id || crop._id) ? "Remove from wishlist" : "Save to wishlist"}
             >
               {isWishlisted(crop.id || crop._id) ? "❤️ Saved" : "🤍 Save"}

@@ -29,7 +29,7 @@ const Home = () => {
 
   const { addToCart } = useCartStore();
   const { getPrediction } = usePricePredictions();
-  const { toggle: toggleWishlist, isWishlisted, fetchWishlist } = useWishlistStore();
+  const { toggle: toggleWishlist, isWishlisted, isToggling, fetchWishlist } = useWishlistStore();
   const navigate = useNavigate();
 
   // Reset scroll position on mount — prevents stale scroll state from previous route
@@ -245,7 +245,8 @@ const Home = () => {
                     {/* Wishlist heart — top-right, always visible */}
                     <button
                       onClick={(e) => { e.stopPropagation(); toggleWishlist(crop.id); }}
-                      className="absolute top-2 right-2 z-10 bg-white/80 rounded-full w-8 h-8 flex items-center justify-center text-base hover:scale-110 transition shadow-sm"
+                      disabled={isToggling(crop.id)}
+                      className="absolute top-2 right-2 z-10 bg-white/80 rounded-full w-8 h-8 flex items-center justify-center text-base hover:scale-110 transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                       title={isWishlisted(crop.id) ? "Remove from wishlist" : "Add to wishlist"}
                     >
                       {isWishlisted(crop.id) ? "❤️" : "🤍"}
@@ -300,20 +301,6 @@ const Home = () => {
 
                 </div>
               ))}
-            </div>
-
-            {/* Infinite scroll sentinel + status */}
-            <div ref={sentinelRef} className="mt-10 flex flex-col items-center gap-3">
-              {loading && (
-                <p className="text-base-content/60 animate-pulse text-sm">
-                  {t("home.loading")}
-                </p>
-              )}
-              {!loading && page >= totalPages && crops.length > 0 && (
-                <p className="text-base-content/40 text-sm">
-                  🌾 {t("home.noCrops", "You've seen all available crops")}
-                </p>
-              )}
             </div>
 
             {/* Pagination buttons — fallback for no-JS / accessibility */}

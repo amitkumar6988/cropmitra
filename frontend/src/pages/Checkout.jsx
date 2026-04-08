@@ -12,19 +12,19 @@ const Checkout = () => {
   const navigate = useNavigate();
 
   const { addresses, fetchAddresses } = useAddressStore();
-  const { cart, clearCart } = useCartStore();
+  const { cart, clearCart, loading: cartLoading } = useCartStore();
   const { placeOrder, loading } = useOrderStore();
  const { handleOnlinePayment} = usePaymentStore();  // ⭐ USE STORE
 
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("COD");
 
-  // Redirect if cart empty
+  // Redirect only after cart has finished loading and is confirmed empty
   useEffect(() => {
-    if (!cart || cart.length === 0) {
+    if (!cartLoading && (!cart || cart.length === 0)) {
       navigate("/");
     }
-  }, [cart, navigate]);
+  }, [cart, cartLoading, navigate]);
 
   // Fetch addresses
   useEffect(() => {
@@ -44,7 +44,7 @@ const Checkout = () => {
   }, [addresses, selectedAddress]);
 
   const totalAmount = cart.reduce(
-    (sum, item) => sum + item.crop.price * item.quantity,
+    (sum, item) => sum + (item.priceAtAddTime || item.crop.price) * item.quantity,
     0
   );
 
@@ -123,7 +123,7 @@ const Checkout = () => {
                 </span>
 
                 <span className="font-semibold">
-                  ₹{item.crop.price * item.quantity}
+                  ₹{(item.priceAtAddTime || item.crop.price) * item.quantity}
                 </span>
               </div>
             ))}

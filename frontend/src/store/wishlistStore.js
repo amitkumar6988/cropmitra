@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 export const useWishlistStore = create((set, get) => ({
   wishlist: [], // array of populated crop objects
+  pendingIds: new Set(), // IDs currently being toggled — prevents race conditions
 
   fetchWishlist: async () => {
     try {
@@ -15,6 +16,10 @@ export const useWishlistStore = create((set, get) => ({
   toggle: async (cropId) => {
     if (!cropId) return;
     const id = String(cropId);
+
+    // Prevent concurrent toggles for the same crop
+    if (get().pendingIds.has(id)) return;
+    set(state => ({ pendingIds: new Set([...state.pendingIds, id]) }));
 
     // Optimistic update BEFORE API call
     const wasWishlisted = get().wishlist.some(c => String(c._id || c.id || c) === id);
@@ -38,6 +43,12 @@ export const useWishlistStore = create((set, get) => ({
         set(state => ({ wishlist: state.wishlist.filter(c => String(c._id || c.id || c) !== id) }));
       }
       toast.error(err.response?.data?.message || "Failed to update wishlist. Please try again.");
+    } finally {
+      set(state => {
+        const next = new Set(state.pendingIds);
+        next.delete(id);
+        return { pendingIds: next };
+      });
     }
   },
 
@@ -46,5 +57,11 @@ export const useWishlistStore = create((set, get) => ({
     if (!cropId) return false;
     const id = String(cropId);
     return get().wishlist.some(c => String(c._id || c.id || c) === id);
+  },
+
+  // True while a toggle request is in-flight for this crop
+  isToggling: (cropId) => {
+    if (!cropId) return false;
+    return get().pendingIds.has(String(cropId));
   },
 }));

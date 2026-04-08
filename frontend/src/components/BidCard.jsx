@@ -177,12 +177,23 @@ export default function BidCard({ bid, userRole, onBidUpdated }) {
                 </p>
               )}
             </div>
-            <button
-              onClick={() => navigate(userRole === "farmer" ? "/farmer/orders" : "/orders")}
-              className="px-3 py-2 text-xs font-semibold rounded bg-emerald-700 text-white hover:bg-emerald-800 transition"
-            >
-              View order
-            </button>
+            <div className="flex flex-col gap-2 items-end">
+              {/* Pay Now — buyer only, when payment is still pending */}
+              {userRole === "buyer" && bid.order?.paymentStatus === "PENDING" && (
+                <button
+                  onClick={() => navigate(`/payment/${bid._id}`, { state: { bid } })}
+                  className="px-3 py-2 text-xs font-semibold rounded bg-green-600 text-white hover:bg-green-700 transition"
+                >
+                  💳 Pay Now
+                </button>
+              )}
+              <button
+                onClick={() => navigate(userRole === "farmer" ? "/farmer/orders" : "/orders")}
+                className="px-3 py-2 text-xs font-semibold rounded bg-emerald-700 text-white hover:bg-emerald-800 transition"
+              >
+                View order
+              </button>
+            </div>
           </div>
         </div>
       )}

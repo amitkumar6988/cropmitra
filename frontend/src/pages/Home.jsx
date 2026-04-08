@@ -52,6 +52,7 @@ const Home = () => {
   // Sentinel element observed for infinite scroll
   const sentinelRef = useRef(null);
 
+  // Re-attach observer whenever crops change so it always picks up the sentinel
   useEffect(() => {
     const sentinel = sentinelRef.current;
     if (!sentinel) return;
@@ -59,15 +60,19 @@ const Home = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          fetchMoreCrops();
+          // Read fresh state at call time to avoid stale closure
+          const { loading, page, totalPages } = useCropMarketStore.getState();
+          if (!loading && page < totalPages) {
+            fetchMoreCrops();
+          }
         }
       },
-      { rootMargin: "200px" } // trigger 200px before sentinel enters viewport
+      { rootMargin: "300px" }
     );
 
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [fetchMoreCrops]);
+  }, [crops]); // re-run after every crops update so sentinel is always observed
 
   useEffect(() => {
     const urlPage   = parseInt(searchParams.get("page"))   || 1;
@@ -338,6 +343,20 @@ const Home = () => {
           </>
         )}
 
+      </div>
+
+      {/* Infinite scroll sentinel — always in DOM so observer always works */}
+      <div ref={sentinelRef} className="flex flex-col items-center gap-3 py-6">
+        {loading && crops.length > 0 && (
+          <p className="text-base-content/60 animate-pulse text-sm">
+            {t("home.loading")}
+          </p>
+        )}
+        {!loading && page >= totalPages && crops.length > 0 && (
+          <p className="text-base-content/40 text-sm">
+            🌾 You've seen all available crops
+          </p>
+        )}
       </div>
 
       {/* Bid Modal */}

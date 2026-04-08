@@ -5,6 +5,7 @@ import Crop from "../models/crops.model.js";
 import FarmerProfile from "../models/farmer.model.js"
 import { newOrderFarmerTemplate } from "../templates/newOrderFarmerTemplate.js";
 import { orderPlacedTemplate } from "../templates/orderPlacedTemplate.js";
+import { orderDeliveredTemplate } from "../templates/orderDeliveredTemplate.js";
 import {sendEmail} from "../libs/sendEmail.js"
 
 // PLACE ORDER
@@ -151,6 +152,30 @@ export const updateOrderStatus = async (req, res) => {
   order.status = status;
   await order.save();
 
+  // 📧 Send buyer email on every status change
+  const buyer = await User.findById(order.buyer);
+
+  const statusMessages = {
+    CONFIRMED:        { emoji: "✅", label: "Order Confirmed",        body: "Your order has been confirmed by the farmer and is being prepared." },
+    SHIPPED:          { emoji: "🚚", label: "Order Shipped",          body: "Great news! Your order is on its way to you." },
+    OUT_FOR_DELIVERY: { emoji: "📦", label: "Out for Delivery",       body: "Your order is out for delivery and will reach you soon." },
+  };
+
+  if (buyer && statusMessages[status]) {
+    const { emoji, label, body } = statusMessages[status];
+    sendEmail({
+      to: buyer.email,
+      subject: `${emoji} ${label} - CropMitra`,
+      html: `
+        <h2>${emoji} ${label}</h2>
+        <p>Hello ${buyer.name || "User"},</p>
+        <p>${body}</p>
+        <p><strong>Order ID:</strong> #${order._id}</p>
+        <p>— Team CropMitra 🌾</p>
+      `
+    });
+  }
+
   // ✅ WHEN DELIVERED
   if (status === "DELIVERED") {
 
@@ -173,19 +198,12 @@ export const updateOrderStatus = async (req, res) => {
       }
     }
 
-    // 📧 Buyer Email (ONLY THIS ADDED)
-    const buyer = await User.findById(order.buyer);
-
+    // 📧 Buyer delivery email
     if (buyer) {
       sendEmail({
         to: buyer.email,
         subject: "✅ Order Delivered - CropMitra",
-        html: `
-          <h2>Order Delivered ✅</h2>
-          <p>Hello ${buyer.name || "User"},</p>
-          <p>Your order #${order._id} has been delivered successfully.</p>
-          <p>Thank you for shopping with CropMitra 🌾</p>
-        `,
+        html: orderDeliveredTemplate(buyer.name, order._id),
       });
     }
   }

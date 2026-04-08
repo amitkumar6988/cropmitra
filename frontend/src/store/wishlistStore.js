@@ -15,25 +15,29 @@ export const useWishlistStore = create((set, get) => ({
   toggle: async (cropId) => {
     if (!cropId) return;
     const id = String(cropId);
+
+    // Optimistic update BEFORE API call
+    const wasWishlisted = get().wishlist.some(c => String(c._id || c.id || c) === id);
+    if (wasWishlisted) {
+      set(state => ({ wishlist: state.wishlist.filter(c => String(c._id || c.id || c) !== id) }));
+    } else {
+      set(state => ({ wishlist: [...state.wishlist, { _id: id }] }));
+    }
+
     try {
       const res = await axiosInstance.post(`/wishlist/${id}`);
       toast.success(res.data.added ? "Added to wishlist ❤️" : "Removed from wishlist");
-      // Optimistic local update
-      if (res.data.added) {
-        set(state => ({
-          wishlist: state.wishlist.some(c => String(c._id || c.id || c) === id)
-            ? state.wishlist
-            : [...state.wishlist, { _id: id }]
-        }));
-      } else {
-        set(state => ({
-          wishlist: state.wishlist.filter(c => String(c._id || c.id || c) !== id)
-        }));
-      }
       // Refetch for fully populated objects
       get().fetchWishlist();
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to update wishlist");
+      console.error("Wishlist error:", err.response?.data || err.message);
+      // Revert optimistic update on failure
+      if (wasWishlisted) {
+        set(state => ({ wishlist: [...state.wishlist, { _id: id }] }));
+      } else {
+        set(state => ({ wishlist: state.wishlist.filter(c => String(c._id || c.id || c) !== id) }));
+      }
+      toast.error(err.response?.data?.message || "Failed to update wishlist. Please try again.");
     }
   },
 

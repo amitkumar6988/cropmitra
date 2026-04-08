@@ -223,18 +223,9 @@ const Home = () => {
                     {t("home.fresh")}
                   </span>
 
-                  {/* Wishlist heart */}
-                  <button
-                    onClick={() => toggleWishlist(crop.id)}
-                    className="absolute top-4 right-4 text-lg hover:scale-125 transition"
-                    title={isWishlisted(crop.id) ? "Remove from wishlist" : "Add to wishlist"}
-                  >
-                    {isWishlisted(crop.id) ? "❤️" : "🤍"}
-                  </button>
-
-                  {/* Image */}
+                  {/* Image with wishlist heart overlaid inside */}
                   <div
-                    className="h-48 flex items-center justify-center bg-base-200 rounded-2xl overflow-hidden cursor-pointer"
+                    className="relative h-48 flex items-center justify-center bg-base-200 rounded-2xl overflow-hidden cursor-pointer"
                     onClick={() => navigate(`/crop/${crop.id}`)}
                   >
                     <img
@@ -246,6 +237,14 @@ const Home = () => {
                         e.currentTarget.src = appleImg;
                       }}
                     />
+                    {/* Wishlist heart — inside image container, always visible */}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleWishlist(crop.id); }}
+                      className="absolute top-2 right-2 z-10 bg-white/80 rounded-full w-8 h-8 flex items-center justify-center text-base hover:scale-110 transition shadow-sm"
+                      title={isWishlisted(crop.id) ? "Remove from wishlist" : "Add to wishlist"}
+                    >
+                      {isWishlisted(crop.id) ? "❤️" : "🤍"}
+                    </button>
                   </div>
 
                   {/* Info */}

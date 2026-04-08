@@ -20,6 +20,7 @@ import chatRoutes from "./routes/chatRoutes.js";
 import paymentRoutes from "./routes/payment.routes.js"
 import pricePredictionRoutes from "./routes/pricePrediction.routes.js"
 import bidRoutes from "./routes/bid.routes.js"
+import wishlistRoutes from "./routes/wishlist.routes.js"
 
 
 
@@ -62,6 +63,7 @@ app.use("/api/address", addressRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/price-prediction", pricePredictionRoutes);
 app.use("/api/bids", bidRoutes);
+app.use("/api/wishlist", wishlistRoutes);
 
 
 app.use("/api", chatRoutes);

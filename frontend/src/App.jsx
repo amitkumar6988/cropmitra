@@ -48,6 +48,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 // Store
 import { useAuthStore } from "./store/authStore";
 import { useCartStore } from "./store/cartStore";
+import { useWishlistStore } from "./store/wishlistStore";
 
 import "./App.css";
 import Addresses from "./pages/Addresses";
@@ -62,6 +63,7 @@ import AdminPriceFactors from "./pages/AdminPriceFactors.jsx";
 function AppContent() {
   const { fetchUser } = useAuthStore();
   const { fetchCart } = useCartStore();
+  const { fetchWishlist } = useWishlistStore();
   const location = useLocation();
 
   //----------------------------------
@@ -69,6 +71,7 @@ function AppContent() {
   useEffect(() => {
     fetchUser();
     fetchCart();
+    fetchWishlist();
   }, []);
 
   //----------------------------------

@@ -219,11 +219,7 @@ const Home = () => {
                   rounded-3xl p-5 shadow-md hover:shadow-xl transition duration-300"
                 >
 
-                  <span className="badge badge-success absolute top-4 left-4">
-                    {t("home.fresh")}
-                  </span>
-
-                  {/* Image with wishlist heart overlaid inside */}
+                  {/* Image with wishlist heart and fresh badge overlaid inside */}
                   <div
                     className="relative h-48 flex items-center justify-center bg-base-200 rounded-2xl overflow-hidden cursor-pointer"
                     onClick={() => navigate(`/crop/${crop.id}`)}
@@ -237,7 +233,11 @@ const Home = () => {
                         e.currentTarget.src = appleImg;
                       }}
                     />
-                    {/* Wishlist heart — inside image container, always visible */}
+                    {/* Fresh badge — top-left, always fully visible */}
+                    <span className="absolute top-2 left-2 z-10 badge badge-success">
+                      {t("home.fresh")}
+                    </span>
+                    {/* Wishlist heart — top-right, always visible */}
                     <button
                       onClick={(e) => { e.stopPropagation(); toggleWishlist(crop.id); }}
                       className="absolute top-2 right-2 z-10 bg-white/80 rounded-full w-8 h-8 flex items-center justify-center text-base hover:scale-110 transition shadow-sm"

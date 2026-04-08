@@ -26,7 +26,7 @@ const Profile = () => {
   }
 
   const cards = [
-    // Row 1: My Orders | My Offers
+    // Row 1: My Purchases | My Bids
     { title: "orders", icon: "📦", path: "/orders" },
     { title: "myOffers", icon: "🤝", path: "/bids" },
 
@@ -44,7 +44,7 @@ const Profile = () => {
       ? [{ title: "addCrop", icon: "🌾", path: "/farmer/add-crop" }]
       : [{ title: "addresses", icon: "📍", path: "/addresses" }]),
 
-    // Row 4: My Crops (farmer) | Addresses (farmer)
+    // Row 4 (farmer only): My Crops | Addresses
     ...(user?.role === "farmer"
       ? [
           { title: "myCrops", icon: "🌱", path: "/farmer/my-crops" },

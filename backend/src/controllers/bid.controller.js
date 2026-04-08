@@ -416,17 +416,14 @@ export const updateBid = async (req, res) => {
     const bid = await Bid.findById(bidId);
     if (!bid) return res.status(404).json({ success: false, message: "Bid not found" });
 
-    // Only the buyer who placed the bid can edit it
     if (bid.buyer.toString() !== req.user._id.toString()) {
       return res.status(403).json({ success: false, message: "Unauthorized" });
     }
 
-    // Cannot edit accepted or rejected bids
     if (bid.status === "accepted" || bid.status === "rejected") {
       return res.status(400).json({ success: false, message: "Cannot edit an accepted or rejected bid" });
     }
 
-    // Validate quantity against crop availability
     const crop = await Crop.findById(bid.crop);
     if (crop) {
       const available = crop.quantity - crop.sold;
@@ -437,7 +434,7 @@ export const updateBid = async (req, res) => {
 
     bid.bidPrice = bidPrice;
     bid.quantity = quantity;
-    bid.status = "pending"; // reset to pending so farmer sees the updated offer
+    bid.status = "pending";
     bid.negotiationHistory.push({
       role: "buyer",
       action: "bid",
